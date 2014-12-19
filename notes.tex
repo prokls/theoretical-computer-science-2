@@ -6,6 +6,8 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{wasysym}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
 \usepackage[pdfborder={0 0 0}]{hyperref}
 
 % definitions
@@ -24,11 +26,13 @@
   \end{center}
  \end{figure}
 }
+\newcommand{\given}[1]{\textbf{Given.} #1\par}
+\newcommand{\find}[1]{\textbf{Find.} #1\par}
 \newcommand{\cls}[1]{\rm{#1}}
 \newcommand{\probl}[1]{\rm{#1}}
 \newcommand{\card}[1]{|#1|}
 \newcommand{\set}[1]{\left\{#1\right\}}
-\newcommand{\dateref}[1]{\textbf{Date.} #1\par}
+\newcommand{\dateref}[1]{\emph{This lecture took place on } #1\par}
 
 \DeclareMathOperator{\detm}{det}
 \DeclareMathOperator{\perm}{det}
@@ -65,7 +69,7 @@ Evaluations:
 Contents:
 \begin{itemize}
   \item Extended view on complexity theory and modern applications
-  \item Focus: Algorithms, Optimization problems, cryptography
+  \item Focus on algorithms, optimization problems and cryptography
 \end{itemize}
 
 2 sections:
@@ -77,7 +81,10 @@ Contents:
       \item interactive protocols (zero knowledge systems)
       \item probabilistically checkable proof (PCP theorem)
     \end{itemize}
-  \item approximation of complexity (complexity theory of heuristic algorithms)
+  \item Approximation of complexity
+    \begin{itemize}
+      \item complexity theory of heuristic algorithms
+    \end{itemize}
 \end{enumerate}
 
 \subsection{Literature}
@@ -97,9 +104,8 @@ Contents:
 %
 \subsubsection{Problem and approach}
 %
-$G = (U, V, E)$ is an undirected, bipartite graph with $U = \set{u_1, u_2, \ldots, u_n}$ and $V = \set{v_1, v_2, \ldots, v_n}$.
-
-\textbf{Question:} Does a perfect matching in the bipartite graph G exist?
+\given{$G = (U, V, E)$ is an undirected, bipartite graph with $U = \set{u_1, u_2, \ldots, u_n}$ and $V = \set{v_1, v_2, \ldots, v_n}$.}
+\find{Does a perfect matching exist in the bipartite graph $G$?}
 
 \textbf{Note.} This question can be answered in polynomial time with a deterministic algorithm. We take another approach.
 
@@ -151,7 +157,7 @@ In the first case, we have to proceed with further evaluations.
 Assume $p(z_1, z_2, \ldots, z_m)$ to be a polynomial with $m$ variables (must not be the zero polynomial). $u$ is the degree of the variables $\leq d$.
 Furthermore $M > 0$ and $M \in \mathbb{Z}$. It is fact that the number of $m$-tuples $(z_1, \ldots, z_m) \in \set{0, 1, \ldots, M-1}$ with $p(z_1, \ldots, z_m) = 0$ is smaller or equal to $M^{m-1}$ (so this is the upper bound for the null point number).
 
-\textbf{Proof of the Lemma:} Complete induction to $m$.
+\textbf{Proof of the Lemma:} Complete induction over $m$.
 \begin{description}
   \item[$m=1$:]
     Number of null points $\leq d$ (with respect to the fundamental theorem of algebra)
@@ -161,53 +167,61 @@ Furthermore $M > 0$ and $M \in \mathbb{Z}$. It is fact that the number of $m$-tu
     which are in $z_1, \ldots, z_{m-1}$.
 \end{description}
 
-Remarks:
-\begin{itemize}
-  \item $p$ results in evaluation of ``gzz'' test tuple 0.
-\end{itemize}
+\textbf{Remark.}
+  $p$ results in evaluation of ``gzz'' test tuple 0.
 
-Cases:
-\begin{enumerate}
-  \item The coefficient with highest degree of $z_m$ in $p$ is 0. \\
-        Apply induction to the coefficient of $z_m$ with highest degree.
-        The coefficient is a polynomal in $z_1, \ldots, z_{m-1}$.
-        Can therefore $\leq (m-1)$ of $M^{m-2}$ permutations of $(z_1, \ldots, z_{m-1})$.
-        In combination with the selection of $z_m$ ($M$ possibilities).
-        $\leq (m-1)$ of $M^{m-1}$.
-  \item Is not $0$. \\
-        We have a polynomial of degree $\leq d$ in $z_m$ such that $\leq d$ null points
-        can exist for each combination of $z_1, \ldots, z_{m-1}$.
-        Therefore $\leq d$ $M^{m-1}$ further null points of $p$.
-        Addition of $(m-1)$ in $M^{m-1}$ with $d$ with $M^{m-1}$ results in $\leq m\cdot d$ with $M^{m-1}$.
-        So this lemma is proven.
-\end{enumerate}
+Case distinction:
+\begin{description}
+  \item[The coefficient with highest degree of $z_m$ in $p$ is 0.]
+    Apply induction to the coefficient of $z_m$ with highest degree.
+    The coefficient is a polynomal in $z_1, \ldots, z_{m-1}$.
+    Can therefore $\leq (m-1)$ of $M^{m-2}$ permutations of $(z_1, \ldots, z_{m-1})$.
+    In combination with the selection of $z_m$ ($M$ possibilities).
+    $\leq (m-1)$ of $M^{m-1}$.
+  \item[Is not $0$.]
+    We have a polynomial of degree $\leq d$ in $z_m$ such that $\leq d$ null points
+    can exist for each combination of $z_1, \ldots, z_{m-1}$.
+    Therefore $\leq d$ $M^{m-1}$ further null points of $p$.
+    Addition of $(m-1)$ in $M^{m-1}$ with $d$ with $M^{m-1}$ results in $\leq m\cdot d$ with $M^{m-1}$.
+    So this lemma is proven.
+\end{description}
 
 Consider the following algorithm:
-Choose $m$ random integers ($i_1, \ldots, i_m$) for the assignment of $x_{i,j}$ with $\set{i,j} \in E$.
-(here $m = |E|$) with $x_{i,j} \in \set{0, \ldots, M-1}$ whereby in the case of a matching $M = 2m = 2\cdot |E|$.
 
-Evaluate $\det A(G)$ for $x_{i,j}$ assignment  ($i_1, \ldots, i_m$).
+\begin{algorithm}
+\begin{algorithmic}[1]
+  \State
+    Choose $m$ random integers ($i_1, \ldots, i_m$) for the assignment of $x_{i,j}$ with $\set{i,j} \in E$.
+    (here $m = |E|$) with $x_{i,j} \in \set{0, \ldots, M-1}$ whereby in the case of a matching $M = 2m = 2\cdot |E|$.
+  \State Evaluate $\det A(G)$ for $x_{i,j}$ assignment  ($i_1, \ldots, i_m$).
+  \If{$\det A(G) (i_1, \ldots, i_m) \neq 0$}
+    \State \Return ``YES, G has a perfect matching''.
+  \Else
+   \State \Return ``I know know'' (we need further repetitions).
+  \EndIf
+  \State \Return with no error and ``I don't know in some cases''
+\end{algorithmic}
+\end{algorithm}
 
-If $\det A(G) (i_1, \ldots, i_m) \neq 0$ then answer ``YES, G has a perfect matching''.
-If $\det A(G) (i_1, \ldots, i_m) = 0$ then answer ``I know know'' (we need further repetitions).
-
-Answer Yes with no error and ``I don't know in some cases'': Is an algorithm of complexity class RP.
+This algorithm is part of the complexity class RP.
 
 \subsubsection{Analysis of the algorithm}
 %
 Properties of the algorithm:
 \begin{itemize}
-  \item If the answer is Yes (there exists an perfect matching) the answer is always correct (no false positives).
-  \item If the graph does not have a perfect matching, the answer of the algorithm is not complete.
-        Consider the answer ``No'' if the number of repetitions with the answer ``I don't know'' exceeds
-        some threshold (therefore, false negatives are possible).
+  \item If the answer is Yes (there exists an perfect matching), the answer is always correct (no false positives).
+  \item
+    If the graph does not have a perfect matching, the answer of the algorithm is not complete.
+    Consider the answer ``No'' if the number of repetitions with the answer ``I don't know'' exceeds
+    some threshold (therefore, false negatives are possible).
 \end{itemize}
 
 What's the probability that we get a false negative?
 \begin{itemize}
-  \item In the case of matching we can see that the error probability (applying the algorithm once)
-        is $\leq \frac12$ (recognize that $d=1$ here).
-        $k$ applications: $\leq \frac{1}{2^k}$.
+  \item
+    In the case of matching we can see that the error probability (applying the algorithm once)
+    is $\leq \frac12$ (recognize that $d=1$ here).
+    $k$ applications: $\leq \frac{1}{2^k}$.
   \item This is a Monte-Carlo algorithm.
 \end{itemize}
 
@@ -215,23 +229,26 @@ What's the probability that we get a false negative?
 %
 2-SAT (polynomial evaluable with flow theory) and 3-SAT (NP-complete). 2 or 3 literals per clause.
 
-\textbf{Input:} A boolean equation $\phi$ in conjunctive normal form. \\
-\textbf{Problem:} Is $\phi$ satisfiable?
+\given{A boolean equation $\phi$ in conjunctive normal form.}
+\find{Is $\phi$ satisfiable?}
 
 Consider the following algorithm for SAT:
-\begin{enumerate}
-  \item Start with a random assignment $T$ for the variables $x_1, \ldots, x_n$.
-  \item Repeat $r$ times:
-    \begin{enumerate}
-      \item Is satisfiable? Answer yes.
-      \item $c$ is one of the clauses which are not satisfied.
-            Take one literal and negate its variable in the assignment.
-    \end{enumerate}
-  \item Answer ``no'' or ``probably no''.
-\end{enumerate}
+\begin{algorithm}
+\begin{algorithmic}[1]
+  \State Start with a random assignment $T$ for the variables $x_1, \ldots, x_n$.
+  \For{$r$ times}
+    \If{$T$ is a satisfiable assignment}
+      \State \Return yes.
+    \EndIf
+    \State Let $c$ be one of the clauses which are not satisfied.
+    \State Take one literal of $T$ and negate its variable in the assignment.
+  \EndFor
+  \State \Return ``no'' or ``probably no''.
+\end{algorithmic}
+\end{algorithm}
 
 Is also a Monte-Carlo-Algorithm.
-Probability for false negatives? How to choose $r$?
+Open issues: Probability for false negatives? How to choose $r$?
 
 Is a polynomial upper bound of $r$ (in regards of the number of clauses) enough
 for a practical error probability? (exponentially, it is easily feasible)
@@ -349,8 +366,8 @@ In the meantime a deterministic polynomial primality test is known
 (Agrawal, Kayal, Saxena). For a few years only randomized primality tests
 (which represent Monte Carlo algorithms) were known.
 
-\textbf{Given:} n is odd  \\
-\textbf{Question:} Is $n$ not a prime number?
+\given{$n$ is odd}
+\find{Is $n$ not a prime number?}
 
 \section{Probabilistic complexity classes overview}
 
@@ -795,8 +812,8 @@ This is also a total function problem. The algorithm has pseudo-polynomial runti
 it depends on pseudo-polynomial property of $W$). It is an open question whether there exists
 a polynomial algorithm.
 
-Given: Given an undirected graph ($G = (V, E)$) and a hamiltonian cycle $Q$ in G.
-Find: A second hamiltonian cycle (but does not have to exist) (different from $Q$)..
+\given{An undirected graph ($G = (V, E)$) and a hamiltonian cycle $Q$ in G.}
+\find{A second hamiltonian cycle (but does not have to exist) (different from $Q$).}
 
 For cubic graphs (3-regular\footnote{$d(v) = 3 \forall v \in V$})
 there is always a second hamiltonian cycle (if there is at least one).
@@ -807,23 +824,23 @@ Is a total function problem and it is open whether there is a polynomial algorit
 
 \subsection{Variant 1 of TSP: TSP$_{\text{DEC}}$}
 %
-Given: $n\times n$ matrix D and a boundary $c^*$. \\
-Question: Is there a tour with length $\leq c^*$?
+\given{$n\times n$ matrix D and a boundary $c^*$.}
+\find{Is there a tour with length $\leq c^*$?}
 
 \subsection{Variant 2 of TSP: EXACT-TSP}
 %
-Given: $n\times n$ matrix $D$, value $c^*$ \\
-Question: Does the optimal tour has length $c^*$?
+\given{$n\times n$ matrix $D$, value $c^*$}
+\find{Does the optimal tour has length $c^*$?}
 
 \subsection{Variant 3 of TSP: TSP-COST}
 %
-Given: $n\times n$ matrix $D$. \\
-Find: Length of the optimal tour
+\given{$n\times n$ matrix $D$.}
+\find{Length of the optimal tour}
 
 \subsection{Variant 4 of TSP: TSP}
 %
-Given: $n\times n$ matrix $D$. \\
-Find: optimal tour.
+\given{$n\times n$ matrix $D$.}
+\find{optimal tour.}
 
 \section{Complexity class DP}
 
@@ -964,8 +981,8 @@ In the left graph we define the edge weights to get an EXACT-TSP instance.
 Set
 \[
     d_{ij} := \begin{cases}
-        1 & \text{if }\set{i,j}\text{ is an edge in G or edge in G'} \\
-        2 & \text{if }\set{i,j}\text{ is no edge in G but i,j are vertices of G} \\
+        1 & \text{if $\set{i,j}$ is an edge in G or edge in G'} \\
+        2 & \text{if $\set{i,j}$ is no edge in G but i,j are vertices of G} \\
         3 & \text{else} \\
     \end{cases}
 \]
@@ -1038,7 +1055,7 @@ $A \subseteq \sigma^*$ is a language.
 $M^?$ with $A$ as oracle runs like a traditional turing machine except
 for the transition of the query state.
 \[
-    M^A(x) \ldots \text{applies oracle TM $M^?$ with oracle A to input x}
+    M^A(x) \ldots \text{applies oracle TM $M^?$ with oracle $A$ to input x}
 \]
 
 Instead of the single language, we also consider language classes.
@@ -1049,7 +1066,7 @@ Polynomial number of steps (including number of oracle calls,
 excluding time for running the oracle). Analogous: $\text{FP}^{\text{NP}}$.
 
 \textbf{Question:}
-Are there any $\text{FP}^{\text{NP}}$-complete problems?
+  Are there any $\text{FP}^{\text{NP}}$-complete problems?
 
 \subsection{MAX-OUTPUT}
 
@@ -1173,15 +1190,17 @@ by $N$ to the tape.
 
 \textbf{Proof:}
 \begin{enumerate}
-  \item Using binary search and a SAT oracle we can evaluate the greatest
-        total weight of satisfiable clauses. With variable fixitation like in
-        FSAT we get an assignment which has the target function value.
-        Thus MAX-WEIGHT $\in \text{FP}^{\text{NP}}$.
-  \item Reduce MAX-OUTPUT to MAX-WEIGHT-SAT.
-        The proof of the theorem by Cook uses a non-deterministic $N$ and an input
-        $1^n$. A boolean equation $\phi(N, n)$ is constructed such that each
-        satisfying assignment of $\phi(N, n)$ corresponds to a correct evaluation
-        of $N$ to $1^n$.
+  \item
+    Using binary search and a SAT oracle we can evaluate the greatest
+    total weight of satisfiable clauses. With variable fixitation like in
+    FSAT we get an assignment which has the target function value.
+    Thus MAX-WEIGHT $\in \text{FP}^{\text{NP}}$.
+  \item
+    Reduce MAX-OUTPUT to MAX-WEIGHT-SAT.
+    The proof of the theorem by Cook uses a non-deterministic $N$ and an input
+    $1^n$. A boolean equation $\phi(N, n)$ is constructed such that each
+    satisfying assignment of $\phi(N, n)$ corresponds to a correct evaluation
+    of $N$ to $1^n$.
 \end{enumerate}
 
 We use this construction. All clauses of $\phi(N, n)$ are assigned a high weight value;
@@ -1273,7 +1292,8 @@ $L$ can be evaluated with a polynomial number of non-adaptive oracle calls.
 Firstly we determine with $\mathcal{O}(\log{n})$ NP-oracle calls (binary search)
 the number $\overline{K}$ of Yes-answers for the given non-adaptive oracle calls.
 
-\text{Remark:} The question whether the given set of SAT equations $\geq K$
+\textbf{Remark.}
+  The question whether the given set of SAT equations $\geq K$
   is satisfiable is a NP-question.
 
 Finally, are there $\overline{K}$ satisfying truth assignments
@@ -1339,36 +1359,40 @@ $\exists k \geq 1$ such that $(x, y) \in R \Rightarrow
 
 \textbf{Proof by induction (by $i$):}
 \begin{enumerate}
-  \item With $i=1$, $\Sigma_1 P = \text{NP}$
-        The stated theorem results from the known characteristics
-        of $\text{NP}$ with a certificate. We know:
-        \[
-          L \in \text{NP} \Leftrightarrow \exists
-          \text{in polynomial time decidabe, polynomial balanced relation R}
-        \] \[
-          \text{ with } L = \set{x: (x, y) \in R \text{ for some y}}
-        \]
-        Induction introduction accomplished.
-  \item $i \geq 2$ and step $i - 1 \to i$
+  \item
+    With $i=1$, $\Sigma_1 P = \text{NP}$
+    The stated theorem results from the known characteristics
+    of $\text{NP}$ with a certificate. We know:
+    \[
+      L \in \text{NP} \Leftrightarrow \exists
+      \text{in polynomial time decidabe, polynomial balanced relation R}
+    \] \[
+      \text{ with } L = \set{x: (x, y) \in R \text{ for some y}}
+    \]
+    Induction introduction accomplished.
+  \item
+    $i \geq 2$ and step $i - 1 \to i$
     \begin{itemize}
-      \item ``$\Leftarrow$'': There exists a relation $R$ according
-            to the theorem (right part of the equation) additionally
-            $L \in \Sigma_i O = \text{NP}^{\Sigma_{i-1} P}$. \\
-            Thus, we have to define a non-deterministic oracle turingmachine
-            which uses an oracle from $\Sigma_{i-1} P$ and decides $L$.
+      \item
+        ``$\Leftarrow$'': There exists a relation $R$ according
+        to the theorem (right part of the equation) additionally
+        $L \in \Sigma_i O = \text{NP}^{\Sigma_{i-1} P}$. \\
+        Thus, we have to define a non-deterministic oracle turingmachine
+        which uses an oracle from $\Sigma_{i-1} P$ and decides $L$.
 
-            For the input $x$ this TM guesses the associated $y$ and asks
-            $\Sigma_{i-1} P$ oracle, whether $(x, y) \in R$ (or actually---
-            because $R$ is a $\Sigma_{i-1} P$ relation---whether $(x, y) \notin R$).
-      \item ``$\Rightarrow$'': $L \in \Sigma_i P$ (additionally with a
-            corresponding relation $R$).
+        For the input $x$ this TM guesses the associated $y$ and asks
+        $\Sigma_{i-1} P$ oracle, whether $(x, y) \in R$ (or actually---
+        because $R$ is a $\Sigma_{i-1} P$ relation---whether $(x, y) \notin R$).
+      \item
+        ``$\Rightarrow$'': $L \in \Sigma_i P$ (additionally with a
+        corresponding relation $R$).
 
-            Because $L \in \Sigma_i P$ there exists a non-deterministic oracle
-            turingmachine $M^?$ with oracle $K \in \Sigma_{i-1} P$ such that
-            $M^?$ decides $L$.
-            Because $K \in \Sigma_{i-1} P$ there exists a polynomial balanced
-            relation $S$ with $S$ decidable in $\Pi_{i-2}$ such that
-            $z \in K \Leftrightarrow \exists w: (z, w) \in S$.
+        Because $L \in \Sigma_i P$ there exists a non-deterministic oracle
+        turingmachine $M^?$ with oracle $K \in \Sigma_{i-1} P$ such that
+        $M^?$ decides $L$.
+        Because $K \in \Sigma_{i-1} P$ there exists a polynomial balanced
+        relation $S$ with $S$ decidable in $\Pi_{i-2}$ such that
+        $z \in K \Leftrightarrow \exists w: (z, w) \in S$.
     \end{itemize}
   \item We construct $R$ with the help of $S$. We know $x \in L
         \Leftrightarrow$ there exists a valid, accepted computation of
@@ -1413,7 +1437,7 @@ $\exists$ in odd case). This $\ldots$ describes an alternating quantifier sequen
 Proof results from the repeated application of Theorem 2.7 and Corollary 2.8
 and adhesion of certificates.
 
-\textbf{Remark:}
+\textbf{Remarks:}
 \begin{itemize}
   \item Analogously the non-recursive characteristic of $\Pi_i P$.
         But this sequence starts with an all-quantifier.
@@ -1463,15 +1487,18 @@ $(x,y,z) \in S$ with $S \in \Pi_{i-1} P$ $\Rightarrow L \in \Sigma_i P$
 %
 Consider a quantified SAT problem $\text{QSAT}_i$ with $i$ quantifiers.
 
-\textbf{Given.} A SAT equation $\phi$.
+\given{
+  A SAT equation $\phi$.
   The variables in $\phi$ are partitioned in $i$ classes $X_1, X_2, \ldots, X_i$. \\
-\textbf{Question.} 
+}
+\find{
   Is it true, that a partial truth assignment for $X_1$ exists such that
   for all partial truth assignment of variables in $X_2$ there
   exists partial truth assignments for variables in $X_3$ such that
   \dots $X_1$. \\
   Problem can analogously defined to start with $\forall$ quantifier.
   $\exists X_1 \forall X_2 \exists X_3 \ldots \phi$
+}
 
 \textbf{Theorem 2.11.}
 $\text{QSAT}_i$ is $\Sigma_i P$-complete.
@@ -1610,7 +1637,8 @@ for any $j \in \set{1, \ldots, p(n)}$.
 \textbf{Question:}
   What's the probability that $b$ is covered?
 \[
-    b \in A(x) \oplus t_y \stackrel{\text{observation}}{\Leftrightarrow}
+    b \in A(x) \oplus t_y
+    \stackrel{\text{observation}}{\Leftrightarrow}
     \underbrace{b \oplus t_j}_{\text{randomized because of third property}} \in A(x)
 \]
 It has the same distribution like $t_1, \ldots, t_n$.
@@ -1669,9 +1697,14 @@ is NP-complete.
 
 \subsection{\#MATCHING / PERMANENT}
 %
-Given a graph $G = (V \cup U, E)$ with $U = \set{u_1, \ldots, u_n}$ and
-$V = \set{v_1, \ldots, v_n}$. Find the number of perfect matchings in $G$
-(this corresponds to a 1-by-1 mapping of vertices in $U$ to vertices in $V$).
+\given{
+  A graph $G = (V \cup U, E)$ with $U = \set{u_1, \ldots, u_n}$
+  and $V = \set{v_1, \ldots, v_n}$.
+}
+\find{
+  Number of perfect matchings in $G$
+  (this corresponds to a 1-by-1 mapping of vertices in $U$ to vertices in $V$).
+}
 
 We consider the adjacency matrix $A^G$ which is associated to $G$.
 $A(G) = (a_{ij})$ with \[
@@ -1681,8 +1714,7 @@ $A(G) = (a_{ij})$ with \[
     \end{cases}
 \]
 
-When does the association $\pi$ (permutation $\pi \in S_n$) describe
-a perfect matching?
+When does the association $\pi$ (permutation $\pi \in S_n$) describe a perfect matching?
 
 \[
     a_{i\pi(i)} = 1  \forall i \in \set{1, \ldots, n}
@@ -1711,7 +1743,7 @@ subgraphs of $G$ ($2^m$ at maximum) which contain a path from $1$ to $n$.
 
 \section{\#P}
 %
-Spoken ``number P'' or ``sharp P''.
+Pronounced as ``number P'' or ``sharp P''.
 Is the class of counting problems that are associated using relation $Q$.
 All previously mentioned problems are part of \#P.
 
@@ -2083,7 +2115,8 @@ with $(x, y) \in \mathbb{R}$ is odd).
 
 \subsubsection{Problem: $\probl{\oplus SAT}$}
 %
-Given a SAT equation. The question is, is the number of satisfying assignments even?
+\given{A SAT equation.}
+\find{Is the number of satisfying assignments even?}
 
 \textbf{Theorem 3.6.} $\probl{\oplus SAT}$ is $\oplus P$ complete.
 
@@ -2286,8 +2319,7 @@ polynomial time in $|x|$ and with $k$ message exchanges:
   x \notin L \Rightarrow \forall \underbrace{P}_{\text{proof}}:
     \set{0,1}^* \rightarrow \set{0,1}^*
 \] \[
-  \text{with } \operatorname{propability}(\text{verifier does not
-    accept }P) = 0
+  \text{with } \operatorname{propability}(\text{verifier does not accept }P) = 0
 \]
 
 Complexity class $d | P$ (``d'' for deterministic) contains all
@@ -2388,14 +2420,16 @@ In our definition of $\cls{IP}$ we had
 
 \subsection{Graph isomorphism (GI) or complement and interactive protocols}
 %
-\textbf{Given.} 2 graphs $G_0 = (V_0, E_0), G_1 = (V_1, E_1)$ with
-$|V_0| = |V_1|$ and $|E_0| = |E_1|$. \\
-\textbf{Question.} Are $G_0$ and $G_1$ isomorphic ($G_0 \cong G_1$)?
+\given{
+  2 graphs $G_0 = (V_0, E_0), G_1 = (V_1, E_1)$ with
+  $|V_0| = |V_1|$ and $|E_0| = |E_1|$.
+}
+\find{Are $G_0$ and $G_1$ isomorphic ($G_0 \cong G_1$)?}
 
 \subsection{Complement of graph isomorphism}
 %
-\textbf{Given.} (like in previous graphs) \\
-\textbf{Question.} Are $G_0$ and $G_1$ not isomorph?
+\given{Same configuration as previously.}
+\find{Are $G_0$ and $G_1$ not isomorphic?}
 
 \drawing{graph_isomorphism.pdf}
 
@@ -2480,11 +2514,10 @@ X might be a certificate of a NP problem.
 
 \subsection{ZKP Problem: Magic door}
 %
-\textbf{Given.} Given is a room A and room B. They are separated by a magic door
+\given{Given is a room A and room B. They are separated by a magic door
   which can only be opened by a secret. An anteroom is externally accessible and
-  allows to enter room A and room B through separate (simple) doors. \\
-\textbf{Question.} How can Bob verify that he knows the secret without telling
-  Alice the secret?
+  allows to enter room A and room B through separate (simple) doors.}
+\find{How can Bob verify that he knows the secret without telling Alice the secret?}
 
 Alice stays in the anteroom. Bob goes into room A and comes back from room B.
 He must have changed the room through the magic door.
