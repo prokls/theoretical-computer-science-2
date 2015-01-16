@@ -32,7 +32,7 @@
 \newcommand{\probl}[1]{\rm{#1}}
 \newcommand{\card}[1]{|#1|}
 \newcommand{\set}[1]{\left\{#1\right\}}
-\newcommand{\dateref}[1]{\emph{This lecture took place on } #1\par}
+\newcommand{\dateref}[1]{\emph{This lecture took place on #1.}\par}
 
 \DeclareMathOperator{\detm}{det}
 \DeclareMathOperator{\perm}{det}
@@ -42,7 +42,8 @@
 % metadata
 \title{
   Theoretical Computer Science 2 \\
-  \large{lecture notes, university of technology Graz}
+  \large{University of Technology Graz} \\
+  \normalsize{Lecture notes of a student}
 }
 \date{\today}
 \author{Lukas Prokop}
@@ -60,11 +61,11 @@
 \dateref{2nd of Oct 2013}
 \subsection{Structure of this course}
 %
-Evaluations:
-\begin{itemize}
-  \item 2-3 board presentations
-  \item oral exam
-\end{itemize}
+Evaluation:
+\begin{description}
+  \item[Practicals] 2-3 board presentations
+  \item[Lecture] oral exam (ask for date via email)
+\end{description}
 
 Contents:
 \begin{itemize}
@@ -109,7 +110,12 @@ Contents:
 
 \textbf{Note.} This question can be answered in polynomial time with a deterministic algorithm. We take another approach.
 
-\drawing{tcs2_bipartite_graph_perfect_matching.pdf}
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics{tcs2_bipartite_graph_perfect_matching.pdf}
+    \caption{Perfect matching in a bipartite graph}
+  \end{center}
+\end{figure}
 
 Consider a matrix $A(G) = (a_{i,j})$ for graph $G$. We distinguish 2 cases:
 
@@ -271,7 +277,7 @@ represented as special directed graph.
 \drawing{tcs2_algebraic_circuit.pdf}
 
 \[
-    x_1 x_2 + x_3
+  x_1 x_2 + x_3
 \]
 
 All vertices (which are not sources and are not inner vertices) do have
@@ -298,7 +304,7 @@ exercise 1, we discussed previously.
 
 Consider for example
 \[
-    \prod_{i=1}^n (1 + x_i)
+  \prod_{i=1}^n (1 + x_i)
 \]
 This is a very compact description, but the circuit has size $2n = \mathcal{O}(n)$
 but polynomial has $2^n$ terms.
@@ -308,16 +314,15 @@ nice Monte-Carlo algorithm.
 
 We can use the following Lemma 1.2 (analogous to Lemma 1.1):
 \begin{quote}
-    Is $p(x_1,\ldots,x_n)$ a polynomial of total degree $\max \tilde{d}$.
-    For example $x_1^2 x_2^3 x_3 x_4^7$ has max-degree 13 for all terms.
-    
-    S is a finite set of integers. If $a_j,\ldots,a_n$ is selected randomly
-    out of S.
-    
-    In this case:
-    \[
-        P(p(a_1, \ldots, a_n) \neq 0) \geq 1 - \frac{\tilde{d}}{\card{S}}
-    \]
+  Is $p(x_1,\ldots,x_n)$ a polynomial of total degree $\max \tilde{d}$.
+  For example $x_1^2 x_2^3 x_3 x_4^7$ has max-degree 13 for all terms.
+
+  S is a finite set of integers. If $a_j,\ldots,a_n$ is selected randomly out of S.
+
+  In this case:
+  \[
+    P(p(a_1, \ldots, a_n) \neq 0) \geq 1 - \frac{\tilde{d}}{\card{S}}
+  \]
 \end{quote}
 
 A circuit C of size $m$ contains $\leq m$ multiplications and therefore degree $\leq 2^m$.
