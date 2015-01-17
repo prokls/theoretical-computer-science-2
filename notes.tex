@@ -8,11 +8,16 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{wasysym}
-\usepackage[pdfborder={0 0 0}]{hyperref}
+\usepackage{xcolor}
+\usepackage{hyperref}
 \usepackage[toc,page]{appendix}
 \usepackage{algpseudocode}
 \usepackage{algorithm}
 \usepackage{framed}
+
+\definecolor{lighter-gray}{gray}{0.20}
+\definecolor{light-gray}{gray}{0.30}
+\hypersetup{pdfborder={0 0 0},colorlinks=true,urlcolor=lighter-gray,linkcolor=light-gray}
 
 % definitions
 \newcommand{\drawing}[1]{%
@@ -33,7 +38,7 @@
 \newcommand{\given}[1]{\textbf{Given.} #1\par}
 \newcommand{\find}[1]{\textbf{Find.} #1\par}
 \newcommand{\cls}[1]{\rm{#1}}
-\newcommand{\probl}[1]{\rm{#1}}
+\newcommand{\probl}[1]{\text{\textsc{#1}}}
 \newcommand{\card}[1]{|#1|}
 \newcommand{\set}[1]{\left\{#1\right\}}
 \newcommand{\dateref}[1]{\emph{This lecture took place on #1.}\par}
@@ -56,7 +61,7 @@
 
 % settings
 \parindent0pt
-\setcounter{tocdepth}{2}
+%\setcounter{tocdepth}{2}
 %\setlength{\parskip}{15pt plus 1pt minus 2pt}
 
 \begin{document}
@@ -103,12 +108,13 @@ Contents:
   \item S. Arora, B. Barak, Computational complexity (A modern approach), 2009 [modern, exhaustive].
 \end{itemize}
 
-\setlength{\parskip}{\baselineskip}
+\setlength{\parskip}{0.8\baselineskip}
 \newpage
 
 
 \section{Randomized complexity classes}
-\subsection{Problem: Evaluation of symbolic determinants for a bipartite graph}
+\subsection{Problem: Does a perfect matching exist in a given bipartite graph?}
+\label{sec:perfect-matching-algorithm}
 %
 \subsubsection{Problem and approach}
 %
@@ -161,7 +167,7 @@ Remarks:
 \end{itemize}
 
 For actual values of $x_{i,j} \in \mathbb{Q}$ we can evaluate $\det A(G)$ in polynomial time (eg. via gaussian elimination).
-For the symbolic determinant evaluation no algorithm is known (actually, the question if a specific coefficient is the coefficient of the symbolic non-zero determinant, is an NP-complete problem).
+For the symbolic determinant evaluation no algorithm is known (actually, the question if a specific coefficient is the coefficient of the symbolic non-zero determinant, is an \cls{NP}-complete problem).
 
 In our case we want to know whether or not $\det A(G) = 0$.
 
@@ -205,8 +211,8 @@ Case distinction:
 \end{description}
 
 Consider the following algorithm:
-
 \begin{algorithm}
+\caption{\href{http://www.cs.cmu.edu/afs/cs/academic/class/15859-f04/www/scribes/lec3.pdf}{Mulmuley, Vazirani and Vazirani (1987)}}
 \begin{algorithmic}[1]
   \State
     Choose $m$ random integers ($i_1, \ldots, i_m$) for the assignment of $x_{i,j}$ with $\set{i,j} \in E$.
@@ -221,7 +227,7 @@ Consider the following algorithm:
 \end{algorithmic}
 \end{algorithm}
 
-This algorithm is part of the complexity class RP.
+This algorithm is part of the complexity class \cls{RP}.
 
 \subsubsection{Analysis of the algorithm}
 %
@@ -244,8 +250,9 @@ What's the probability that we get a false negative?
 \end{itemize}
 
 \subsection{Problem: SAT problem}
+\label{sec:sat-algorithm}
 %
-2-SAT (polynomial evaluable with flow theory) and 3-SAT (NP-complete). 2 or 3 literals per clause.
+2-SAT (polynomial evaluable with flow theory) and 3-SAT (\cls{NP}-complete). 2 or 3 literals per clause.
 
 \begin{spec}
   \given{A boolean equation $\phi$ in conjunctive normal form.}
@@ -282,7 +289,8 @@ for a practical error probability? (exponentially, it is easily feasible)
 \dateref{7th of Oct 2013}
 
 \subsection{Problem: Identity test for polynomials}
-
+\label{sec:identity-test-polynomials-algorithm}
+%
 Polynomials are represented here as equations of an algebraic circuit
 (instead of the operators $\land, \lor$ and $\neg$ in classical booleans
 circuits, we have $+$, $-$ and $\cdot$) with $n$ variables $x_1, x_2, \ldots, x_n$
@@ -378,6 +386,7 @@ such that $k$ is prime and $k \notin B$: $\geq \frac{2^{2m}}{4m}$
 with probability $\delta = \frac{1}{4m}$ a random $k$ has the desired properties.
 
 \subsection{Problem: Primality testing}
+\label{sec:primality-test-algorithm}
 %
 In the meantime a deterministic polynomial primality test is known
 (Agrawal, Kayal, Saxena). For a few years only randomized primality tests
@@ -388,10 +397,10 @@ In the meantime a deterministic polynomial primality test is known
   \find{Is $n$ not a prime number?}
 \end{spec}
 
-\section{Probabilistic complexity classes overview}
-
-A quick overview: Definitions for this topic.
-See table~\ref{tab:prob_compl_classes}.
+\subsection{Probabilistic complexity classes overview}
+%
+In this section we want to given a quick overview for the definitions required to discuss this topic.
+See table~\ref{tab:prob_compl_classes} for the class overview.
 
 \begin{table}
  \begin{center}
@@ -400,15 +409,15 @@ See table~\ref{tab:prob_compl_classes}.
       & failure/error probability & failure/error probability \\
       & (bounded) & (not bounded) \\
    \hline
-     Two-sided error & \cls{BPP} & PP \\
+     Two-sided error & \cls{BPP} & \cls{PP} \\
    \hline
-     One-sided error & RP, co-RP & NP, co-NP \\
-                     & RP = Monte-Carlo algorithms & \\
+     One-sided error & \cls{RP}, \cls{co-\cls{RP}} & \cls{NP}, \cls{co-NP} \\
+                     & \cls{RP} = Monte-Carlo algorithms & \\
    \hline
-     No error, & $ZPP = RP \cap co-RP$ & $NP \cap co-NP$ \\
+     No error, & $\cls{ZPP} = \cls{RP} \cap \cls{co-\cls{RP}}$ & $\cls{NP} \cap \cls{co-NP}$ \\
      but failure is possible & (Las Vegas Algorithms) & \\
    \hline
-     No error, no failure & P & \\
+     No error, no failure & \cls{P} & \\
    \hline \hline
   \end{tabular}
   \caption{Probabilistic complexity classes overview}
@@ -420,38 +429,34 @@ Now we would like to formalize Monte-Carlo algorithms.
 Monte-Carlo turing machines are special cases of probabilistic turing machines.
 Probabilistic turing machines are a generalization.
 
-\section{Monte-Carlo turing machines and RP}
+\subsection{Monte-Carlo turing machines and \cls{RP}}
 %
 \textbf{Definition.} $N$ is a polynomial, non-deterministic turingmachine.
 We assume for $N$ that all computations for an input $x$ take the same number
 of steps. This number has to be polynomial in $\card{x}$, because $N$ is
-a polynomial TM. Furthermore in every step there are exactly 2 non-deterministic
-decision possibilities.
+a polynomial turingmachine. Furthermore in every step there are exactly 2 non-deterministic decision possibilities.
 
 $L$ is a language. $N$ is called Monte-Carlo turing machine for $L$ iff
 $N$ satisfies the definition above and the computations for an input
 of size $N$ are finished in $p(n)$ runtime (with $p$ as a polynomial) .
 Furthermore it satisfies:
 \begin{itemize}
-  \item If $x \notin L$ then all computations of $N$ for $x$ end
-         with the result ``No'' (no false positives).
-  \item If $x \in L$ then more than half of the evaluations for x
-         result in ``Yes''. (So the probability of false negatives $\leq \frac12$.)
-         ($\frac12$ can be adjusted; is not fixed.)
+  \item
+    If $x \notin L$ then all computations of $N$ for $x$ end with the result ``No'' (no false positives).
+  \item
+    If $x \in L$ then more than half of the evaluations for x result in ``Yes''. Hence the probability of false negatives is $\leq \frac12$ where $\frac12$ is a configurable constant.
 \end{itemize}
 
-RP (randomized polynomial) is a historical name and does not really distinguish
+\cls{RP} (randomized polynomial) is a historical name and does not really distinguish
 it from other classes.
 
 The set of all languages for which there exists a Monte-Carlo turing machine
-is called RP.
+is called \cls{RP}.
 
 \textbf{Remark:}
 \begin{itemize}
-  \item This concept corresponds to the informal concept of Monte-Carlo algorithms
-         (of our exercises).
-  \item If we replace the allowed error probability for false negatives
-         to a value $\neq \frac12$, but $< 1$, no new complexity class is created.
+  \item This concept corresponds to the informal concept of Monte-Carlo algorithms (of our exercises).
+  \item If we replace the allowed error probability for false negatives to a value $\neq \frac12$, but $< 1$, no new complexity class is created.
 \end{itemize}
 
 Repetitions:
@@ -466,16 +471,16 @@ For k repetitions: Error probability for false negatives is $(1 - \epsilon)^k$. 
 
 Runtime $k\cdot p(n)$ is polynomial for polynomial $k$.
 
-\cls{RP} lies between \cls{P} and \cls{NP}. \cls{co-RP} is the complement of \cls{RP} (ie. the result ``Yes''/``No''/``I don't know'' is exchanged).
+\cls{RP} lies between \cls{P} and \cls{NP}. \cls{co-\cls{RP}} is the complement of \cls{RP} (ie. the result ``Yes''/``No''/``I don't know'' is exchanged).
 
-\section{Complexity class ZPP}
-\label{class:zpp}
+\subsection{Complexity class \cls{ZPP}}
+\label{class:ZPP}
 \label{class:rp}
 \label{class:co-rp}
 
 \cls{ZPP} (polynomial randomized with zero probability of error)
 
-\centerline{ZPP = RP $\cap$ co-RP}
+\centerline{\cls{ZPP} = \cls{RP} $\cap$ \cls{co-\cls{RP}}}
 
 In other words, there exists a Monte-Carlo algorithm which does not return
 any false positives and an analogon which does not return false negatives
@@ -483,17 +488,17 @@ any false positives and an analogon which does not return false negatives
 
 If probability of false positives and false negatives $\leq \frac12$ (after $k$ repetitions).
 
-\section{Complexity class PP}
+\subsection{Complexity class \cls{PP}}
 \label{class:pp}
 
 \cls{PP} (probabilistic polynomial) is not defined algorithmically.
 
 \begin{spec}
-  \given{We consider \probl{MAJSAT} (majority SAT). Given is a SAT equation with $n$ variables.}
+  \given{We consider \probl{MajSat} (majority SAT). Given is a SAT equation with $n$ variables.}
   \find{Is is true that the majority of $2^n \geq 2^{n-1}+1$ assignments satisfy the equation?}
 \end{spec}
 
-It is unknown whether or not \probl{MAJSAT} $\in$ \cls{NP} (how should the polynomial certificate look like?). It is even more unlikely that \probl{MAJSAT} $\in$ \cls{RP}.
+It is unknown whether or not \probl{MajSat} $\in$ \cls{NP} (how should the polynomial certificate look like?). It is even more unlikely that \probl{MajSat} $\in$ \cls{RP}.
 
 \textbf{Definition.} (\cls{PP}) A language $L$ is in \cls{PP}, iff there is a non-deterministic polynomial TM $N$ (N satisfies the basic constraints mentioned above) such that for all inputs $x$ it states that
 \[
@@ -502,11 +507,11 @@ It is unknown whether or not \probl{MAJSAT} $\in$ \cls{NP} (how should the polyn
 Therefore this turing machine has an inherent majority evaluation capability.
 
 \textbf{Remark:} Definition of \cls{PP} is syntactically, but not semantically.
-We can easily show \probl{MAJSAT} $\in$ \cls{PP} and \probl{MAJSAT} is \cls{PP}-complete.
+We can easily show \probl{MajSat} $\in$ \cls{PP} and \probl{MajSat} is \cls{PP}-complete.
 
 \dateref{9. Okt 2013}
 %
-\subsection{$\cls{NP} \subseteq \cls{PP}$}
+\subsubsection{$\cls{NP} \subseteq \cls{PP}$}
 %
 \textbf{Proof.}
 $L \in \cls{NP}$. $N$ is a non-deterministic turing machine for $L$.
@@ -541,8 +546,8 @@ Remarks:
          not algorithmically defined.
 \end{itemize}
 
-\section{The class \cls{BPP}}
-\label{class:\cls{bpp}}
+\subsection{The class \cls{BPP}}
+\label{class:bpp}
 %
 \textbf{Definition.} \cls{BPP} (bounded error probabilistic polynomial)
 contains all languages $L$ for which there is a non-deterministic
@@ -561,14 +566,14 @@ Remarks:
   \item Any value $> \frac12$ and $<1$ can be used instead of $\frac34$.
   \item For $\frac34$: $\frac14$ error probability for false positives 
          and false negatives.
-  \item RP $\subseteq$ \cls{BPP} (Monte-Carlo algorithm with error probability
+  \item \cls{RP} $\subseteq$ \cls{BPP} (Monte-Carlo algorithm with error probability
          $\frac12$ repeated twice in different direction)
-  \item co-RP $\subseteq$ \cls{BPP}
+  \item \cls{co-\cls{RP}} $\subseteq$ \cls{BPP}
   \item \cls{BPP} $\subseteq$ PP (can easily be derived from the definition;
          has fewer constraints)
   \item Open issues:
     \begin{itemize}
-      \item \cls{BPP} $\subseteq$ NP?
+      \item \cls{BPP} $\subseteq$ \cls{NP}?
       \item $\exists$ \cls{BPP}-complete problems?
     \end{itemize}
   \item \cls{BPP} is closed under complement.
@@ -578,27 +583,27 @@ Remarks:
 All these complexity classes require some concept of probability;
 for example random bits set on the turing machine. Question in practice:
 
-Assume we don't have any fair dice/coins (probability(head) $\neq \frac12$).
+Assume we don't have any fair dice / coins ($\prop{(\text{head})} \neq \frac12$).
 Does this define a new complexity class?
 
-You can create a fair dice with polynomial effort using an unfair dice.
-So RP and \cls{BPP} (etc) are not influenced.
+You can create a fair die with polynomial effort using an unfair die.
+So \cls{RP} and \cls{BPP} (etc) are not influenced.
 
-Take a coin with p(head) = $\rho$ with $\rho \neq \frac12$.
+Take a coin with $\prop{(\text{head})} = \rho$ with $\rho \neq \frac12$.
 The following two lemmas apply:
 \begin{enumerate}
-  \item (Lemma 1.3) A coin with p(head) = $\rho$ can be simulated
+  \item (Lemma 1.3) A coin with $\prop{(\text{head})} = \rho$ can be simulated
          by a probabilistic, polynomial turing machine in expected time
          $\mathcal{O}(1)$, if the i-th bit of $\rho$ is determinable
          in polynomial time in $i$.
          Notice that the last assumption is only relevant for irrational
          numbers.
-  \item (Lemma 1.4) A coin with p(head) = $\frac12$ (fair coin)
+  \item (Lemma 1.4) A coin with $\prop{(\text{head})} = \frac12$ (fair coin)
         can be simulated with a coin of p(head) = $\rho$ in expected time
         $\mathcal{O}\left(\frac{1}{\rho (1-\rho)}\right)$.
 \end{enumerate}
 
-\subsection{Proof of Lemma 1.3}
+\subsubsection{Proof of Lemma 1.3}
 %
 Is $0.p_1 p_2 p_3\ldots$ a binary fractional representation of $\rho$.
 The probabilistic turingmachine creates a sequence of random bits
@@ -616,7 +621,7 @@ The probability for this is defined by $(\frac12)^l$.
 The probability that the result is head is $\sum_i p_i \cdot \frac{1}{2^i} = \rho$.
 Expected runtime is $\sum_i i^c \cdot \frac{1}{2^i}$ for constant $c$.
 
-\subsection{Proof of Lemma 1.4}
+\subsubsection{Proof of Lemma 1.4}
 %
 We construct a turing machine which simulates (using the possibility to
 use a coin with p(head) = $\rho$ multiple times) a fair coin.
@@ -632,7 +637,7 @@ The conditional probability for stopping in step $k$ is equal for head
 and bottom. So we can a fair coin with p(head) = $\frac12$.
 This proof does work for any value of $\rho$.
 
-\subsection{Remark for lemma 1.2}
+\subsubsection{Remark for lemma 1.2}
 %
 The ``probabilistic turing machine'' must have two transition function
 $\delta_0$ ad $\delta_1$. We decide in every step whether we want to use
@@ -647,27 +652,36 @@ we don't lose any properties for a biased coin.
 We can also show this for polynomial runtime rather than expected runtime
 (by splitting the bitstring into blocks).
 
-\section{Relations of probabilistic complexity classes}
+\subsection{Relations of probabilistic complexity classes}
+%
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics{randomized_complexity_classes.pdf}
+    \caption{Overview of randomized complexity classes}
+    \label{fig:complexity-classes}
+  \end{center}
+\end{figure}
 
-\drawing{randomized_complexity_classes.pdf}
+Figure~\ref{fig:complexity-classes} gives an overview of randomized complexity classes.
 
-The position of \cls{BPP} are partially unknown; partially we will discuss them
-later on.
+The position of \cls{BPP} is partially unknown; partially we will discuss them later on.
 
-The aspect of expected polynomial runtime is considered at a different
-place.
+The aspect of expected polynomial runtime is considered at a different place.
 
-\section{The class FP}
+\section{The class \cls{FP}}
+\label{class:fp}
 %
 \textbf{Definition.} (Complexity class of function problems for polynomial hierarchy).
 Many problems in practice are no decision problems (they result in complexer
 answers than ``YES'' or ``NO''). Two examples are FSAT and TSP.
 
 \subsection{Problem: FSAT}
+\label{sec:fsat}
 %
-\textbf{Problem.}
-Given is a SAT equation $\phi$. If there is any satisfying assignment
-for $\phi$ we return such an assignment. Otherwise ``No''.
+\begin{spec}
+  \given{A SAT equation $\phi$.}
+  \find{Is there any satisfying assignment for $\phi$? If so, return it. Otherwise report ``No''.}
+\end{spec}
 
 Assume that a polynomial SAT algorithm exists for the decision problem SAT,
 then we can solve FSAT in polynomial time:
@@ -687,6 +701,7 @@ $\phi$ is a SAT equation with variables $x_1, x_2, \ldots, x_n$.
 This approach takes $\mathcal{O}(n)$ SAT calls.
 
 \subsection{Problem: Travelling Salesman Problem (TSP)}
+\label{sec:tsp}
 %
 TSP with distance matrix of integers.
 \[
@@ -737,13 +752,13 @@ to its old value. In the other case we keep $d_{ij}$ as $c^* + 1$.
 In the end (after $\mathcal{O}(n^2)$ steps) we know the optimal tour.
 
 \paragraph{Formally}
-$L$ is a language in NP. We want to define the associated function problem to L: FL.
-For $L \in $ NP there is a binary relation $R_L$, which is determinable in polynomial
+$L$ is a language in \cls{NP}. We want to define the associated function problem to L: FL.
+For $L \in $ \cls{NP} there is a binary relation $R_L$, which is determinable in polynomial
 time such that $\forall x \text{strings} \exists \text{string} y$ with
 $\underbrace{R_L(x,y)}_{(x,y) \in R_L} \Leftrightarrow x \in L$. $R_L(x,y)$ is the
 certificate of an accepted instance. 
 
-\textbf{Definition.} (FL) Is $L \in NP$ the associated problem FL for L.
+\textbf{Definition.} (FL) Is $L \in \cls{NP}$ the associated problem FL for L.
 Given a string $x$ we have to find a string $y$ such that $R_L(x,y)$ or answer that
 there is no such $y$.
 
@@ -763,14 +778,15 @@ correct output for the instance with input $x$.
 \textbf{Definition.} A function problem $A$ is says to be \emph{complete for a class
 FC} of function problems iff $A \in$ FC and all problems in FC can be reduced to $A$.
 
-We can show that FSAT $\in$ FNP is FNP-complete.
+We can show that FSAT $\in$ F\cls{NP} is F\cls{NP}-complete.
 
 We want to consider a special class of function problems. They are problems for which there
 are always valid solution and as such the answer is never ``No''. Example for such a problem:
 $\exists$ always $y$ with $R_L(x,y)$?
 
-\subsection{Factorization of integers}
-
+\subsection{Problem: Factorization of integers}
+\label{sec:integer-factorization}
+%
 \begin{spec}
   \given{A number $n \in \mathbb{N}$}
   \find{prime number decomposition}
@@ -784,12 +800,13 @@ efficiently.
 
 \textbf{Definition.} (total functions) For such function problems there is always a valid solution.
 
-\textbf{Definition.} We consider a problem $L$ in FNP total, when for all strings $x \exists$
+\textbf{Definition.} We consider a problem $L$ in F\cls{NP} total, when for all strings $x \exists$
 string $y$ $\exists$ with $R_L(x,y)$.
 
-\textbf{Definition.} (TFNP) partial class of all function problems with total functions.
+\textbf{Definition.} (TF\cls{NP}) partial class of all function problems with total functions.
 
-\subsection{Exercise 2}
+\subsection{Exercise 2: Integer sets of same sum}
+\label{sec:same-sum-integer-sets}
 %
 \begin{spec}
   \given{$n$ numbers $a_1, \ldots, a_n \in \mathbb{Z}^+$ with $\sum_{i=1}^n a_i < 2^n-1$.}
@@ -799,7 +816,8 @@ string $y$ $\exists$ with $R_L(x,y)$.
 For the special case $\sum_{i=1}^n a_i < 2^n -1$ there is always a solution due to the
 pidgeonhole principle. Without this constraint, the decision problem is complete.
 
-\subsection{Exercise 3}
+\subsection{Exercise 3: Happy net problem}
+\label{sec:happy-net-problem}
 %
 \begin{spec}
   \given{Undirected graph $G$, edge weights $w_e \in \mathbb{Z}$ for all $e \in E$. State function $S$: $V \rightarrow \set{+1, -1}$.}
@@ -850,85 +868,87 @@ Is a total function problem and it is open whether there is a polynomial algorit
 
 \drawing{fnp.pdf}
 
-\subsection{Variant 1 of TSP: TSP$_{\text{DEC}}$}
+\subsection{Four variants of TSP}
+
+\subsubsection{TSP$_{\text{DEC}}$}
 %
 \begin{spec}
   \given{$n\times n$ matrix D and a boundary $c^*$.}
   \find{Is there a tour with length $\leq c^*$?}
 \end{spec}
 
-\subsection{Variant 2 of TSP: EXACT-TSP}
+\subsubsection{EXACT-TSP}
 %
 \begin{spec}
   \given{$n\times n$ matrix $D$, value $c^*$}
   \find{Does the optimal tour has length $c^*$?}
 \end{spec}
 
-\subsection{Variant 3 of TSP: TSP-COST}
+\subsubsection{TSP-COST}
 %
 \begin{spec}
   \given{$n\times n$ matrix $D$.}
   \find{Length of the optimal tour}
 \end{spec}
 
-\subsection{Variant 4 of TSP: TSP}
+\subsubsection{TSP}
 %
 \begin{spec}
   \given{$n\times n$ matrix $D$.}
   \find{optimal tour.}
 \end{spec}
 
-\section{Complexity class DP}
+\section{Complexity class \cls{DP}}
 
 \textbf{Definition.} (difference polynomial) $L \in \text{DP} \Leftrightarrow
 \exists$ languages $L_1 \in \text{NP}$ and $L_2 \in \text{co-NP}$ with
 $L = L_1 \cap L_2$.
 
-\textbf{Remark.} DP $\neq$ P $\cap$ co-NP.
+\textbf{Remark.} \cls{DP} $\neq$ P $\cap$ \cls{co-NP}.
 
-\subsection{Examples for problems in DP}
+\subsection{Examples for problems in \cls{DP}}
 %
 \textbf{Examples:}
 \begin{itemize}
-  \item EXACT-TSP $\in$ DP. \\
-        Split problem in $\leq c^*$ (in NP) and $\geq c^*$ (in co-NP) questions.
+  \item EXACT-TSP $\in$ \cls{DP}. \\
+        Split problem in $\leq c^*$ (in \cls{NP}) and $\geq c^*$ (in \cls{co-NP}) questions.
   \item SAT-UNSAT \\
         Given a SAT formular $\phi$ and $\phi'$. \\
         Question: Is $\phi$ satisfiable or $\phi'$ not satisfiable?
 \end{itemize}
 
-\textbf{Statement 2.1} SAT-UNSAT $\in$ DP-complete.
+\textbf{Statement 2.1} SAT-UNSAT $\in$ \cls{DP}-complete.
 
 \textbf{Proof:}
 \begin{enumerate}
-  \item SAT-UNSAT $\in$ DP. \\
+  \item SAT-UNSAT $\in$ \cls{DP}. \\
         $L_1 = \set{(\phi, \phi'): \phi \text{ is satisfiable}}$. \\
-	$L_1 \in P$ due to SAT $\in$ NP. \\
+	$L_1 \in P$ due to SAT $\in$ \cls{NP}. \\
         $L_2 = \set{(\phi, \phi'): \phi \text{ is not satisfiable}}$. \\
-        $L_2 \in$ co-NP due to co-SAT $\in$ co-NP ($L = L_1 \cap L_2$).
-  \item SAT-UNSAT is DP-complete. \\
-        Is $L \in DP$ and $L$ is reducible to SAT-UNSAT. \\
-        $L \in DP \rightarrow \exists l_1 \in \text{NP}, l_2 \in \text{co-NP}$ \\
+        $L_2 \in$ \cls{co-NP} due to co-SAT $\in$ \cls{co-NP} ($L = L_1 \cap L_2$).
+  \item SAT-UNSAT is \cls{DP}-complete. \\
+        Is $L \in \cls{DP}$ and $L$ is reducible to SAT-UNSAT. \\
+        $L \in \cls{DP} \rightarrow \exists l_1 \in \text{NP}, l_2 \in \text{co-NP}$ \\
 	$\exists$ reduction $R_1$ of $L_1$ to SAT. $\exists$ reduction $R_2$ of $\overline{L_2}$ (complement) to SAT. \\
         Construct reduction $R$ with $R(x) = (R_1(x), R_2(x))$ of $L$ to SAT-UNSAT. \\
         $R(x)$ is YES-instance of SAT-UNSAT $\Leftrightarrow R_1(x)$ is satisfiable,
         $R_2(x)$ is not satisfiable $\Leftrightarrow x \in L_1, x \in L_2 \Leftrightarrow x \in L$.
 \end{enumerate}
 
-\textbf{Statement 2.2} EXACT-TSP $\in$ DP-complete.
+\textbf{Statement 2.2} EXACT-TSP $\in$ \cls{DP}-complete.
 
 (repetition)
 
-$L \in \text{DP}: L = L_1 \cap L_2$ with $L_1 \in$ NP, $L_2 \in$ co-NP.
+$L \in \text{DP}: L = L_1 \cap L_2$ with $L_1 \in$ \cls{NP}, $L_2 \in$ \cls{co-NP}.
 
-SAT-UNSAT $\in$ DP-complete.
+\probl{SAT-UNSAT} $\in$ \cls{DP}-complete.
 
-\textbf{Satz 2.2.} EXACT-TSP is DP-complete.
+\textbf{Satz 2.2.} EXACT-TSP is \cls{DP}-complete.
 
 Proof:
 \begin{enumerate}
-  \item EXACT-TSP $\in$ DP has been proven above.
-  \item DP-Completeness (reduction of SAT-UNSAT) \\
+  \item \probl{EXACT-TSP} $\in$ \cls{DP} has been proven above.
+  \item \cls{DP}-Completeness (reduction of SAT-UNSAT) \\
         We start from the classical reduction of 3SAT to the hamiltonian cycle problem.
         Using the equations $\phi$, $\phi'$ of the SAT-UNSAT instance
         we get 2 graph $G$ and $G'$ such that $G$ and $G'$ posess a hamiltonian path
@@ -986,7 +1006,7 @@ of our previous assumption, we start in $1$.
 
 (Further details shall be studies as home exercise)
 
-\subsection{Back to our EXACT-TSP construction}
+\subsection{Back to our \probl{EXACT-TSP} construction}
 
 Independent of the satisfiability of $\phi$ and $\phi'$, $G$ and $G'$ contain
 a so-called broken hamiltonian path. This corresponds to an ``almost satisfiable
@@ -1051,11 +1071,11 @@ length $n+2$.
 
 \subsection{Other problems}
 
-Many other NP-hard combinatorial optimization problems lead
-in the EXACT-version to DP-complete problems.
-DP is the natural class of EXACT-COST.
+Many other \cls{NP}-hard combinatorial optimization problems lead
+in the EXACT-version to \cls{DP}-complete problems.
+\cls{DP} is the natural class of EXACT-COST.
 
-Other problems of DP:
+Other problems of \cls{DP}:
 \begin{description}
   \item[Critical SAT]
     Given a SAT equation $\phi$. \\
@@ -1070,11 +1090,11 @@ Other problems of DP:
     Does $\phi$ has exactly one satisfying assignment?
 \end{description}
 
-All problems above (except Unique-SAT) are DP-complete. For Unique-SAT
+All problems above (except Unique-SAT) are \cls{DP}-complete. For Unique-SAT
 it is unknown.
 
 \textbf{Theorem 2.3.} (A first step towards polynomial hierarchy.)
-A different approach to DP: Use a SAT oracle and one co-SAT oracle.
+A different approach to \cls{DP}: Use a SAT oracle and one co-SAT oracle.
 Answer ``Yes'' whenever first answer ($L_1$) is yes and second answer
 ($L_2$) is ``No''.
 
@@ -1098,9 +1118,9 @@ for the transition of the query state.
 \]
 
 Instead of the single language, we also consider language classes.
-$P^{\text{SAT}}$ is a generalization of DP and has an polynomial number
+$P^{\text{SAT}}$ is a generalization of \cls{DP} and has an polynomial number
 of oracle call available. $P^{\text{SAT}}$ corresponds to $P^{\text{NP}}$,
-which can be achieved by oracle turing machine with oracle of NP.
+which can be achieved by oracle turing machine with oracle of \cls{NP}.
 Polynomial number of steps (including number of oracle calls,
 excluding time for running the oracle). Analogous: $\text{FP}^{\text{NP}}$.
 
@@ -1132,7 +1152,7 @@ Iterate question: Is there an output greater $\geq x$? (or $> x$)
 We determine the optimal value in $\mathcal{O}(\log{n})$
 (polynomial number of) steps.
 
-Each question is a question in NP. Therefore: $\text{FP}^{\text{NP}}$.
+Each question is a question in \cls{NP}. Therefore: $\text{FP}^{\text{NP}}$.
 
 Secondly, we get a little bit more technical:
 We show $\text{FP}^{\text{NP}}$ completeness.
@@ -1316,7 +1336,7 @@ with a vertical =-sign at the bottom].
   P^{\text{NP}[\log{n}]} \subseteq P_{\text{PARA}}^{\text{NP}}
 \]
 Consider an oracle-TM which makes $\mathcal{O}(\log{n})$ (adaptive)
-NP-oracle calls. For the first call: 2 possible outcomes
+\cls{NP}-oracle calls. For the first call: 2 possible outcomes
 (depending on yes/no answer). For second call the same, etc.
 This gives us a complete decision tree describing $2^{k \cdot log{n}}
 \in \mathcal{O}(n^k)$ oracle calls and answers.
@@ -1330,12 +1350,12 @@ oracle calls and answers beforehand. The correct decision path can be derived.
 
 $L$ is a language $\in P_{\text{PARA}}^{\text{NP}}$.
 $L$ can be evaluated with a polynomial number of non-adaptive oracle calls.
-Firstly we determine with $\mathcal{O}(\log{n})$ NP-oracle calls (binary search)
+Firstly we determine with $\mathcal{O}(\log{n})$ \cls{NP}-oracle calls (binary search)
 the number $\overline{K}$ of Yes-answers for the given non-adaptive oracle calls.
 
 \textbf{Remark.}
   The question whether the given set of SAT equations $\geq K$
-  is satisfiable is a NP-question.
+  is satisfiable is a \cls{NP}-question.
 
 Finally, are there $\overline{K}$ satisfying truth assignments
 for $\overline{K}$ of the $n$ expressions such that if all others are not
@@ -1497,7 +1517,7 @@ $\forall j > 1$, $\Sigma_j P = \Pi_j P = \delta_j P$.
 
 \textbf{Remark.}
 For $i = 1$ we can conclude that (under the assumption that
-$P = NP$) the layer 1 already does not tell us anything and
+$P = \cls{NP}$) the layer 1 already does not tell us anything and
 the whole hierarchy definition is useless (``collapse at layer 1'').
 If the assumption does not hold we still do not know whether
 or not the hierarchy collapses at any finite layer.
@@ -1723,22 +1743,24 @@ Therefore we get a $\Sigma_2$ p-characterisation of $L$; thus $L \in \Sigma_2 p$
 We know that $\text{\cls{BPP}}^{i-1}$ is closed under complement
 $\Rightarrow \text{\cls{BPP}} \subseteq \Sigma_2 P \cap \Pi_2 P$.
 
-\section{3 counting problems}
+\section{Counting Problems}
 
+\subsection{Three counting problems}
+%
 Not combinatorics, but relations (specially in graph theoretical) problems.
 From a complexity theoretical point of view: How many solutions are there
 for a given problem?
 
-\subsection{\#SAT}
+\subsubsection{\#SAT}
 %
 Given a SAT equation, find the number of satisfying truth assignments.
 Analogously the number of hamiltonian paths - number of hamiltonian paths.
 Analogously the number of cliques - number of cliques with $\geq k$ vertices.
 
 Those examples are couting variables for problems where the basic decision problem
-is NP-complete.
+is \cls{NP}-complete.
 
-\subsection{\#MATCHING / PERMANENT}
+\subsubsection{\probl{\#Matching} / \probl{Permanent}}
 %
 \begin{spec}
   \given{
@@ -1781,29 +1803,29 @@ $\pi \in S_n$ is the set of permutation of $\set{1, \ldots, n}$. Compare
   There exists an efficient algorithm for computation of $\operatorname{perm}(A)$
   or at least for $01$-matrices (restriction of values)?
 
-\subsection{Subgraph paths}
+\subsubsection{Subgraph paths}
 %
 Given a graph with $m$ edges and $n$ vertices. Find the number of
 subgraphs of $G$ ($2^m$ at maximum) which contain a path from $1$ to $n$.
 
-\section{\#P}
+\subsection{\#P}
 %
 Pronounced as ``number P'' or ``sharp P''.
 Is the class of counting problems that are associated using relation $Q$.
-All previously mentioned problems are part of \#P.
+All previously mentioned problems are part of \cls{\#P}.
 
 $Q$ is a polynomial balanced in polynomial time decidable relation.
 The associated counting problem for $Q$: Given an $x$, find the number
 of $y$ with $(x, y) \in Q$?
 
 \textbf{Question.}
-  Are there any of these problems \#P-complete?
+  Are there any of these problems \cls{\#P}-complete?
   (be aware an appropriate reduction term is necessary)
-  \#SAT $\in$ \#P-complete?
+  \#SAT $\in$ \cls{\#P}-complete?
 
 \dateref{4th of Nov 2013}
 
-For the definition of $\#P$-completeness we have two approaches:
+For the definition of $\cls{\#P}$-completeness we have two approaches:
 \begin{itemize}
   \item by using the reduction term, we defined for function problems
         (number of solutions corresponds to solution).
@@ -1814,9 +1836,9 @@ For the definition of $\#P$-completeness we have two approaches:
         factor $k$, $k \in \mathbb{N}$).
   \item Informally:
         \begin{quotation}
-          A function problem $f$ is $\#P$-complete iff problem is in $\#P$
+          A function problem $f$ is $\cls{\#P}$-complete iff problem is in $\cls{\#P}$
           and the existence of a polynomial algorithm for evaluation
-          of $f$ implies $\#P = FP$.
+          of $f$ implies $\cls{\#P} = \cls{FP}$.
         \end{quotation}
         We extend the concept of oracle TMs to simple function languages
         (for oracle TMs: access to an oracle $L \subseteq \set{0,1}^*$ and
@@ -1829,9 +1851,9 @@ For the definition of $\#P$-completeness we have two approaches:
         For function $f: \set{0,1}^* \rightarrow \set{0,1}^*$ $\text{FP}^f$
         denotes the set of functions which can be decided with a polynomial
         turingmachine with oracle calls to $f$. \\
-        Formally: Function $f$ is $\#P$-complete iff $f \in \#P$ and
-        $\forall g \in \#P$ we conclude $g \in \text{FP}^f$.
-        Obviously $f \in FP \Rightarrow \text{FP}^f = FP$.
+        Formally: Function $f$ is $\cls{\#P}$-complete iff $f \in \cls{\#P}$ and
+        $\forall g \in \cls{\#P}$ we conclude $g \in \text{FP}^f$.
+        Obviously $f \in \cls{FP} \Rightarrow \text{FP}^f = \cls{FP}$.
 \end{itemize}
 
 \textbf{Theorem 3.1.}
@@ -1861,20 +1883,20 @@ Reduction via $\#SAT$ (can be dervied from the proof that TSP is
 $\cls{FP}^{\cls{NP}}$ complete).
 
 \textbf{Question.}
-  Are there any $\#P$-complete counting problems whose base problem
+  Are there any $\cls{\#P}$-complete counting problems whose base problem
   (as decision problem) lie in \cls{P}?
 
 \textbf{Answer.} Yes. Two examples:
 
 \begin{itemize}
-  \item $\probl{PERMANENT}$ is $\#P$-complete (see theorem 3.4).
+  \item $\probl{Permanent}$ is $\cls{\#P}$-complete (see theorem 3.4).
   \item $\probl{\#CYCLE}$ (given a graph, count number of cycles).
         There exists a polynomial algorithm for $\probl{\#CYCLE}
         \Rightarrow \cls{P} = \cls{NP}$.
 \end{itemize}
 
 \textbf{Theorem 3.4.} (Valiant, 1979)
-  $\probl{PERMANENT} \in \#P$-complete.
+  $\probl{Permanent} \in \cls{\#P}$-complete.
 
 \textbf{Proof.}
   Goal: $\operatorname{perm}(A)$ evaluation for 01 matrices.
@@ -1913,7 +1935,7 @@ weights of contained edges: $\operatorname{perm}(A)$ is the
 sume of weights of all cycle covers.
 
 \textbf{Remark.}
-  This way we can show that $\probl{PERMANENT} \in
+  This way we can show that $\probl{Permanent} \in
   \cls{FP}^{\cls{\#SAT}}$ (for arbitrary integer matrices).
 
 In the following we will omit edges with weight 0 in our drawings
@@ -1936,7 +1958,7 @@ terms $\omega$ and $-\omega$. The overall weight sum of all
 cycle covers is $0$.
 
 Now we reduce \probl{\#3SAT} (which is \cls{\#P}-complete)
-to \probl{PERMANENT}.
+to \probl{Permanent}.
 
 Now a 3SAT equation $\phi$ with $n$ variables and $m$ clauses
 is given. We will construct an integer matrix A or an equivalent
@@ -1948,7 +1970,7 @@ $\operatorname{\tilde{G}} \Rightarrow \operatorname{P}(A)$.
 
 Later on $\tilde{G} \rightarrow \hat{G}$ with 0-1 weights such that
 $\operatorname{perm}(\tilde{G})$ evaluates $\operatorname{perm}(\hat{G})$
-(then we have shown that 01-problems are $\#P$-complete).
+(then we have shown that 01-problems are $\cls{\#P}$-complete).
 
 The central idea is that there are two types of cycle covers in
 $\tilde{G}$. The ones that are assigned to a satisfying assignment
@@ -2106,7 +2128,7 @@ There are counting problems for which even an approximative algorithm
 for constant $\alpha > 0$ is difficult. But there are also problems
 which are easy to address approximatively.
 
-For the (01) PERMANENT problem: There exists a FPRAS (fully polynomial
+For the (01) PERMANENT problem: There exists a \cls{FP}RAS (fully polynomial
 randomized approximation scheme) algorithm which (for a given $\varepsilon$
 and $\delta$) evaluates a $(1-\varepsilon)$ approximation for requested
 function $f: \set{0,1}^* \rightarrow \mathbb{N}$ (for 01 perm = number
@@ -2115,14 +2137,14 @@ $\delta$ the algorithm is allowed to be faulty) in time
 $\underbrace{p(n, \log{\frac{1}{\delta}}, \log{\frac{1}{\varepsilon}})}_{\text{polynomial}}$.
 
 \textbf{Remark.}
-In case N = NP, then for all problems in \#P a FPRAS\footnote{randomized}
-can be found. Even a FPTAS\footnote{deterministic}
+In case N = \cls{NP}, then for all problems in \cls{\#P} a \cls{FP}RAS\footnote{randomized}
+can be found. Even a \cls{FPTAS}\footnote{deterministic}
 (see last chapter of this lecture).
 
-\subsubsection{Classification of \#P: How powerful is counting?}
+\subsubsection{Classification of \cls{\#P}: How powerful is counting?}
 %
-Problems in \#P are solvable with polynomial limited space
-(eg. lexiographical enumeration). Therefore \#P is \emph{not}
+Problems in \cls{\#P} are solvable with polynomial limited space
+(eg. lexiographical enumeration). Therefore \cls{\#P} is \emph{not}
 more powerful than PSPACE. PH is not more powerful than PSPACE.
 
 What's the relation of $\underbrace{\cls{\#P}}_{\text{class of functions}}$
@@ -2132,7 +2154,7 @@ and $\underbrace{\cls{PH}}_{\text{class of languages}}$?
   $\cls{PH} \subseteq P^{\cls{\#SAT}}$.
 
 Therefore we can solve every problem in the polynomial hierarchy
-if an oracle for a \#P-complete problem is provided.
+if an oracle for a \cls{\#P}-complete problem is provided.
 
 \textbf{Remark.}
   $\cls{\#P} = \cls{FP} \Rightarrow \cls{NP} = \cls{P} \land \cls{PH} = \cls{P}$.
@@ -2140,10 +2162,10 @@ if an oracle for a \#P-complete problem is provided.
 \textbf{Conclusion.}
   Informally: Counting is more powerful than the polynomial hierarchy.
 
-\paragraph{Relation between PP and \#P?}
+\paragraph{Relation between PP and \cls{\#P}?}
   So the question of PP is whether or not half of the evaluations result
   in acceptance. Thus we are only interested in the MSB of the number of
-  accepted evaluations. \#P is interested in the values of all bits.
+  accepted evaluations. \cls{\#P} is interested in the values of all bits.
 
 \textbf{Idea.}
   We are only interested in the LSB (parity). This defines the complexity class
@@ -2158,35 +2180,33 @@ $M$ such that for all strings $x$ we can state that:
 decidable in polynomial time such that $x \in L \Leftrightarrow$ the number of $y$
 with $(x, y) \in \mathbb{R}$ is odd).
 
-\subsubsection{Problem: $\probl{\oplus SAT}$}
+\subsubsection{Problem: \probl{$\oplus$ SAT}}
 %
 \begin{spec}
   \given{A SAT equation.}
   \find{Is the number of satisfying assignments even?}
 \end{spec}
 
-\textbf{Theorem 3.6.} $\probl{\oplus SAT}$ is $\oplus P$ complete.
+\textbf{Theorem 3.6.} \probl{$\oplus$ SAT} is $\oplus$P-complete.
 
 \textbf{Proof.}
-$\probl{\oplus SAT} \in \oplus P$ according to definition.
-$\probl{\oplus P}$ completeness follows from parsimonious reducibility
-of a problem in \#P to \#SAT.
+\probl{$\oplus$ SAT} $\in$ \probl{$\oplus$ P} according to definition.
+\probl{$\oplus$ P} completeness follows from parsimonious reducibility
+of a problem in \cls{\#P} to \probl{\#SAT}.
 
-Analogously, $\probl{\oplus HAMIL. PATH/CYCLE} \in \cls{\oplus P}$-complete.
+Analogously, \probl{$\oplus$ HAMIL. PATH/CYCLE} $\in$ \cls{$\oplus$ P}-complete.
 
-\subsubsection{$\probl{\oplus PERM}$ in $\cls{\oplus P}$-complete}
+\subsubsection{\probl{$\oplus$ PERM} in \cls{$\oplus$ P}-complete}
 %
 Can be solved in polynomial time because the parity of the determinant corresponds
 to the parity of the permanent (polynomial time!).
 
-\textbf{Theorem 3.7.} $\oplus P$ a.g. regarding complement.  % TODO: germanize
-Proof by Ü.
+\textbf{Theorem 3.7.} $\oplus$ P a.g. regarding complement.  % TODO: germanize
+Proof will be done in practicals.
 
-\textbf{Theorem 3.8} $\cls{NP} \subseteq \cls{RP}^{\cls{\oplus P}}$.
-  We will define a polynomial Monte Carlo algorithm for SAT when using a
-  $\cls{\oplus SAT}$ oracle.
+\textbf{Theorem 3.8} \cls{NP} $\subseteq$ \cls{RP}\textsuperscript{\cls{$\oplus$ P}}. We will define a polynomial Monte Carlo algorithm for SAT when using a \cls{$\oplus$ SAT} oracle.
 
-\subsection{$\cls{NP} \subseteq \cls{RP}^{\cls{\oplus P}}$}
+\subsection{\cls{NP} $\subseteq$ \cls{RP}\textsuperscript{\cls{$\oplus$ P}}}
 
 \textbf{Proof.}
 We will define a polynomial Monte-Carlo algorithm for SAT which has access
@@ -2315,7 +2335,7 @@ The algorithm above is a Monte-Carlo algorithm.
 \subsection{Introduction and Terminology}
 %
 In math the classical concept of proofs is strongly related to
-the idea of NP certificates. But the verification is done without
+the idea of \cls{NP} certificates. But the verification is done without
 any interaction. We want to introduce 2 roles/actors:
 \begin{itemize}
   \item Prover
@@ -2373,7 +2393,7 @@ Complexity class $d | P$ (``d'' for deterministic) contains all
 languages for which a deterministic proof system with
 $\operatorname{poly}(n)$ rounds can be found.
 
-\textbf{Lemma 4.1.} $d | P = NP$. (Proof is given in practicals.)
+\textbf{Lemma 4.1.} $d | P = \cls{NP}$. (Proof is given in practicals.)
 
 \textbf{Consequence:}
 With a purely deterministic approach we don't gain any new results.
@@ -2395,7 +2415,7 @@ probability.
 \subsection{Example Scenario}
 %
 The input $x$ is known to both actors. Bob (prover) and Veronica
-(verifier) act alternating. Bob runs algorithm $\tilde{B}$ and
+(verifier) act alternatingly. Bob runs algorithm $\tilde{B}$ and
 Alice runs algorithm $\tilde{V}$. They exchange messages $m_1,
 m_2, \ldots$ of polynomial size in $|x|$.
 
@@ -2464,8 +2484,10 @@ In our definition of $\cls{IP}$ we had
         The constraint to public random bits leads to Arthur-Merlin proofs
         (AM).
 \end{itemize}
+%
+We take a look at interactive protocols and their complements.
 
-\subsection{Graph isomorphism (GI) or complement and interactive protocols}
+\subsection{Graph isomorphism (\probl{GI})}
 %
 \begin{spec}
   \given{
@@ -2475,7 +2497,7 @@ In our definition of $\cls{IP}$ we had
   \find{Are $G_0$ and $G_1$ isomorphic ($G_0 \cong G_1$)?}
 \end{spec}
 
-\subsection{Complement of graph isomorphism}
+\subsection{Complement of graph isomorphism ($\overline{\probl{GI}}$)}
 %
 \begin{spec}
   \given{Same configuration as previously.}
@@ -2493,7 +2515,7 @@ In our definition of $\cls{IP}$ we had
 What about $\overline{\probl{GI}}$?
 
 Complexity state of GI is an open question.
-We don't know know whether GI is NP-complete.
+We don't know know whether GI is \cls{NP}-complete.
 Experts assume No.
 
 \textbf{Theorem 4.2.} (without proof)
@@ -2548,7 +2570,7 @@ In the practicals we will consider an AM(2) protocol for $\overline{\probl{GI}}$
 The following theorem holds:
 
 \textbf{Theorem 4.4.} (without proof)
-  If \probl{GI} is NP-complete, then $\Sigma_2 P = \Pi_2 P$.
+  If \probl{GI} is \cls{NP}-complete, then $\Sigma_2 P = \Pi_2 P$.
   The proof uses an AM(2) protocol.
 
 \cls{IP} protocols can be traced back to research by Goldwasser, Micali and Radkoff.
@@ -2561,7 +2583,7 @@ doesn't want to share ``any'' information with the verifier (to avoid abuse).
 For example if the question is: Does any hamiltonian cycle exist? But prover
 does not want to share the hamiltonian path itself. So generally, we want to
 show that some X satisfies some property, but we don't want to share X itself.
-X might be a certificate of a NP problem.
+X might be a certificate of a \cls{NP} problem.
 
 \subsection{ZKP Problem: Magic door}
 %
@@ -2694,17 +2716,17 @@ the real communication between prover and verifier.
 \textbf{Remark.} Further examples for PZK protocols: see practicals.
 
 Is there any PZK protocol for HAMILTONIAN PATH? We guess not (as for any other
-NP-complete problem).
+\cls{NP}-complete problem).
 
 \[
-  \underbrace{\probl{GI} \in \cls{IP(1)}}_{\text{because in NP}} \cap
+  \underbrace{\probl{GI} \in \cls{IP(1)}}_{\text{because in \cls{NP}}} \cap
   \underbrace{\cls{co-IP(2)}}_{\text{we have shown $\overline{\probl{GI}} \in \probl{IP(2)}$}}
 \] \[
-  \probl{GI} \text{ NP-complete} \Rightarrow \Sigma_2 P = \Pi_2(P)
+  \probl{GI} \text{ \cls{NP}-complete} \Rightarrow \Sigma_2 P = \Pi_2(P)
 \]
 
-If there is a ZPK protocol for NP-complete problems, polynomial hierarchy would
-collapse to layer 2. Is some less strict definition satisfied for NP-complete
+If there is a ZPK protocol for \cls{NP}-complete problems, polynomial hierarchy would
+collapse to layer 2. Is some less strict definition satisfied for \cls{NP}-complete
 problems?
 
 \textbf{First idea for attenuation.}
@@ -2719,8 +2741,8 @@ smaller. Therefore for all polynomials $p$ and a sufficiently large $n$:
 \]
 
 The complexity SZK has some theoretically interesting properties. For example
-we assume that this class lies exactly between P and NP. But it is (like for
-PZK) unlikely that there exists protocols in SZK for NP-complete problems.
+we assume that this class lies exactly between P and \cls{NP}. But it is (like for
+PZK) unlikely that there exists protocols in SZK for \cls{NP}-complete problems.
 
 \[
   \cls{SZK} \subseteq \cls{IP(2)} \cap \cls{co-IP(2)}
@@ -2733,7 +2755,7 @@ PZK) unlikely that there exists protocols in SZK for NP-complete problems.
   real protocol with insignificant probability.
 
   It turns out that (under the assumption mentioned below) \cls{CZK}
-  protocols exist for NP-complete problems.
+  protocols exist for \cls{NP}-complete problems.
 
 \textbf{Definition.} (Standard assumption in formal cryptography)
   There exists a one-way function\footnote{$f(x)$ is computationally
@@ -2943,7 +2965,7 @@ Following from the properties of bit commitment, $\prop(i
 = i') = \frac12$ is the expected number of iterations constant. Distribution
 of messages of simulation algorithm $S$ vs protocol $(B, V')$.
 The difference is only with insignificant probability distinguishable for $V$.
-Analogously we can define CZK protocols for all other NP-complete problems.
+Analogously we can define CZK protocols for all other \cls{NP}-complete problems.
 
 As a second example:
 Colorization of a graph with 3 colors.
@@ -3052,15 +3074,15 @@ constraint).
   if there exists a $(r(n), q(n))$-bounded PCP verifier $V$
   such that
   \[
-    \forall x \in L \exists \text{proof B with }
+    \forall x \in L \:\exists\; \text{proof B with }
       \prop_z(V(x, z, B) = 1) = 1
   \] \[
-    \forall x \notin L \land \forall \text{proofs B'}:
+    \forall x \notin L \land \forall\, \text{proofs B'}:
       \prop_z(V(x, z, B')) \leq \frac12
   \]
   The second definition defines a constrained one-sided error.
 
-\textbf{Relation of PCP, NP and P.}
+\textbf{Relation of PCP, \cls{NP} and P.}
 \[
   \cls{NP} = \cls{PCP}(0, \operatorname{poly}(n))
 \] \[
@@ -3201,8 +3223,7 @@ of clauses in non-trivial \probl{3~SAT} instance is
   \leq 2n + 4{n \choose 2} + 8{n \choose 3} = \mathcal{O}(n^3)
 \]
 
-We need an approach for proofs of random kind.
-We can assume that proof have the ``right'' length.
+We need an approach for proofs of random kind. We can assume that proofs have the ``correct'' length.
 
 A proof verifier for the general case consists of the following components:
 \begin{itemize}
@@ -3535,7 +3556,7 @@ results).
 \section{Approximation from complexity theory perspective}
 %
 \textbf{Motivation.}
-  Many optimization problems are different to solve exactly.
+  Many optimization problems are difficult to solve exactly.
 
 \textbf{Similar Question.}
   Can we efficiently compute approximative solutions for such problems?
@@ -3557,9 +3578,9 @@ results).
  \end{center}
 \end{table}
 
-In the following we will discuss optimization problems.
-$x$ is the input. $S(x)$ denotes the set of valid solutions
-for the instance with input $x$.
+\subsection{A notion of optimization}
+
+In the following we will discuss optimization problems. $x$ is the input. $S(x)$ denotes the set of valid solutions for the instance with input $x$.
 \[
   S(x) \neq 0 \qquad \text{Not optimizable in the other case}
 \]
@@ -3571,8 +3592,10 @@ Furthermore we assume $V(x, s) > 0 \forall x, s$
 (not required, but makes quality function less complex).
 
 $\forall x, s \in S(x)$ the encoding length of $s$ and $v(x, s)$
-is polynomial in $|x|$ (Background: our approximation algorithm
+is polynomial in $\card{x}$ (Background: our approximation algorithm
 shall have polynomial runtime).
+
+\subsection{A definition of approximation quality}
 
 \textbf{Definition.}
   Approximation quality (here: one of multiple variations)
@@ -3617,28 +3640,39 @@ A computes a c-approximation (approximates $Q$ to factor $c$).
 Also the quality of a maximum optimization problem is defined in a way
 such that the quality is $\leq 1$ (inverse of our definition).
 
-\textbf{Example (Bin packing).}
-  $n$ numbers $a_i \in [0,1]$ (item size).
-  Bins have capacity 1.
+\subsection{\probl{Bin-Pack} with an approximation algorithm}
+\label{sec:approx-bin-pack}
+%
+\begin{spec}
+  \given{$n$ numbers $a_i \in [0,1]$ (item size). Bins have capacity 1.}
+  \find{Pack items in minimum number of bins.}
+\end{spec}
 
-\textbf{Goal.}
-  Pack items in minimum number of bins. For the bit fit decreasing (BFD)
-  algorithm the following statements are known:
-  \[
-    v(x, s_{\text{BFD}}(x)) \leq \frac{11}9 \cdot v_\text{opt}(x) + 4
-  \] \[
-    r_{\text{BFD}}(x) \leq \frac{11}{9} + \frac4{v_{\text{opt}}(x)}
-  \]
-  Without loss of generality, we assume that $v_{\text{opt}}(x) \geq 2$
-  because $v_{\text{opt}}(x) = 1$ instances are trivially recognizable.
-  Then
-  \[
-    r_{\text{BFD}}(x) \leq \frac{29}{9}
-  \]
+\begin{algorithm}
+\caption{Best-First Decreasing algorithm for \probl{Bin-Pack} (BFD)}
+\begin{algorithmic}[1]
+  \State Sort elements in descending order.
+  \State Pick largest number and place it in fitting bin such that the smallest amount of capacity is left.
+\end{algorithmic}
+\end{algorithm}
 
-For large values of $v_{\text{opt}}(x)$ $\frac{29}{9}$ is far aways
-from $\frac{11}{9}$ and real quality.
+For the BFD algorithm the following statements are known:
+\[
+  v(x, s_{\text{BFD}}(x)) \leq \frac{11}9 \cdot v_\text{opt}(x) + 4
+\] \[
+  r_{\text{BFD}}(x) \leq \frac{11}{9} + \frac4{v_{\text{opt}}(x)}
+\]
+Without loss of generality, we assume that $v_{\text{opt}}(x) \geq 2$
+because $v_{\text{opt}}(x) = 1$ instances are trivially recognizable.
+Then
+\[
+  r_{\text{BFD}}(x) \leq \frac{29}{9}
+\]
 
+For large values of $v_{\text{opt}}(x)$ $\frac{29}{9}$ is far away from $\frac{11}{9}$ and serious quality.
+
+\subsection{A notion of asymptotic approximation quality}
+%
 We therefore introduce the asymptotic approximation quality
 \[
   r_A^\infty = \operatorname{inf}\left\{
@@ -3656,27 +3690,22 @@ We will almost only consider classical quality.
 But there are some problems (bin packing is one of them)
 for which asymptotical quality is more powerful.
 
-\textbf{Definition (complexity APX, APX*).}
-  Given $r(n): \mathbb{N} \mapsto [0, \infty]$ with
-  $r(n + 1) \geq r(n) \forall n$.
-  The complexity class APX($r(n)$) contains all optimization
-  problems for which an algorithm $A$ with maximum
-  approximation quality $r_A(n) \leq r(n)$ can be found
-  with polynomial runtime.
-  \[
-    \cls{APX} := \bigcup_{c>1, c \text{ const}} \cls{APX}(c)
-  \]
-  ``In constant quality approximable in polynomial time''.
+\subsection{Complexity classes \cls{APX} and \cls{APX*}}
+%
+Let $r(n): \mathbb{N} \mapsto [0, \infty]$ with $r(n + 1) \geq r(n) \forall n$.
+
+The complexity class \probl{APX($r(n)$)} contains all optimization problems for which an algorithm $A$ with maximum approximation quality $r_A(n) \leq r(n)$ can be found with polynomial runtime.
+\[ \cls{APX} := \bigcup_{c>1, c \text{ const}} \cls{APX}(c) \]
+
+Intuitively, ``in constant quality approximable in polynomial time''.
 
 \[
   \cls{APX}^* := \bigcap_{c>1, c \text{ const}} \cls{APX}(c)
 \]
 
-Problem for every $c > 1$ with quality $c$ is approximable.
-Algorithm can depend on $c$.
+Problem for every $c > 1$ with quality $c$ is approximable. Algorithm can depend on $c$.
 
-\textbf{Definition (PTAS).} polynomial time approximation
-  scheme.
+\textbf{Definition (PTAS).} polynomial time approximation scheme.
 
 A PTAS for an optimization problem $Q$ is an algorithm
 (a class of algorithms) with inputs of structure $(x, \varepsilon)$
@@ -3687,19 +3716,22 @@ in polynomial time in $|x|$ (``$\varepsilon$ optimization'').
 A PTAs as complexity class:
   contains all optimization problems for which there exists a PTAs.
 
-\textbf{Definition (FPTAS).}
+\textbf{Definition (\cls{FPTAS}).}
   fully polynomial time approximation scheme
   (runtime is polynomial in $|x|$ and in $\frac1{\varepsilon}$).
 
 For PTAS runtime
 $\mathcal{O}(n^{\frac1{\varepsilon}})$ with $n = \mathcal{O}(|x|)$
-is allowed. For FPTAS it is not.
+is allowed. For \cls{FPTAS} it is not.
 
 Obviously $\cls{P} \subseteq \cls{FPTAS} \subseteq \cls{PTAS} \subseteq \cls{APX}$.
 
-\textbf{Example.} (Max clique problem)
-  Given an undirected graph $G = (V, E)$ with $|V| = n$.
-  Find a complete subgraph of $G$ with maximum vertex number.
+\subsection{Approximation of \probl{Max-Clique}}
+%
+\begin{spec}
+  \given{An undirected graph $G = (V, E)$ with $|V| = n$}
+  \find{A complete subgraph of $G$ with maximum vertex number}
+\end{spec}
 
 \textbf{Trivial algorithm 1.}
   Return random vertices. Quality $\leq n$.
@@ -3710,25 +3742,28 @@ Obviously $\cls{P} \subseteq \cls{FPTAS} \subseteq \cls{PTAS} \subseteq \cls{APX
 
 Runtime is fixed for $k$.
 
-Later on we will see: $\probl{MAX-CLIQUE} \notin \cls{AFX}$.
+Later on we will see: $\probl{Max-Clique} \notin \cls{AFX}$.
 
-\textbf{Example.} (Vertex cover problem)
-  Given is an undirected graph $G = (V, E)$ with $|V| = n$.
-  Find $V' \subseteq V$ such that every edge $e$ in $E$ of $V'$
-  is covered (each edge in $E$ has at least one end vertex in $V'$
-  and $V'$ has minimal cardinality).
+\subsection{Approximation of \probl{Vertex-Cover}}
+%
+\begin{spec}
+  \given{An undirected graph $G = (V, E)$ with $|V| = n$}
+  \find{$V' \subseteq V$ such that every edge $e$ in $E$ of $V'$ is covered (each edge in $E$ has at least one end vertex in $V'$ and $V'$ has minimal cardinality).}
+\end{spec}
 
-For general graph this problem is NP-hard.
+For general graph this problem is \cls{NP}-hard.
 The approximation algorithm is interesting.
 
-\textbf{Approximation algorithm.}
-\begin{enumerate}
-  \item $E' = \{\}$.
-  \item While there is an edge $\{u, v\}$ such that no $u$ and $v$
-        is covered by an edge in $E'$, select this edge and add it
-        to $E'$.
-  \item $V'$ is set of all end vertices of edges in $E'$.
-\end{enumerate}
+\begin{algorithm}
+\caption{Approximation algorithm for \probl{Vertex-Cover}}
+\begin{algorithmic}[1]
+  \State $E' = \{\}$.
+  \While{$\exists$ an edge $\{u, v\}$ such that no $u$ and $v$ is covered by an edge in $E'$}
+    \State select this edge and add it to $E'$
+  \EndWhile
+  \State $V'$ is set of all end vertices of edges in $E'$.
+\end{algorithmic}
+\end{algorithm}
 
 \textbf{Claim.}
   The algorithm above returns vertex cover $V'$ and has
@@ -3748,7 +3783,7 @@ Central point is the property of $E'$ on termination.
 
 % TODO: It should be fine, but there might be some content missing here.
 
-\textbf{Example 3.} (\probl{MAX-3SAT}) Given a \probl{3~SAT} equation $l$ with variables
+\textbf{Example 3.} (\probl{Max-3-SAT}) Given a \probl{3~SAT} equation $l$ with variables
   $x_1, \ldots, x_m$ and clauses $c_1, \ldots, c_n$. Find an assignment such
   that the maximum number of clauses is satisfied.
 
@@ -3818,7 +3853,8 @@ So $x_n$ is fixed. Now iterate. We gain assignment $b_1, \ldots, b_n$.
 Deterministic approximation algorithm with runtime $\mathcal{O}(n\cdot m)$
 with quality $\frac87$.
 
-\subsection{Example 4 Scheduling}
+\subsection{Example 4: Scheduling}
+\label{sec:scheduling}
 %
 A simple 2-machine scheduling problem as example for a problem with a PTAS.
 
@@ -3830,7 +3866,7 @@ A simple 2-machine scheduling problem as example for a problem with a PTAS.
   \find{Find assignment of tasks such total runtime is minimal. A task cannot be split.}
 \end{spec}
 
-Problem is NP-hard (proof via partition problem).
+Problem is \cls{NP}-hard (proof via partition problem).
 
 Set $T = \sum_{j=1}^n p_j$. Obviously $v_{\text{opt}}(x) \geq \frac{T}{2}$.
 \[
@@ -3890,11 +3926,12 @@ Case distinction:
     \]
 \end{enumerate}
 
-Disadvantage: Runtime (PTAS which is no FPTAS, because of $2^{\frac1{\varepsilon}}$).
+Disadvantage: Runtime (PTAS which is no \cls{FPTAS}, because of $2^{\frac1{\varepsilon}}$).
 
-\textbf{Example 5 Knapsack problem}
+\subsection{Example 5: Knapsack problem}
+\label{sec:approx-knapsack}
 %
-The knapsack problem is an example for a FPTAS. NP-complete problem.
+The knapsack problem is an example for a \cls{FPTAS}. \cls{NP}-complete problem.
 
 Given are $n$ items with weights. $g_1, \ldots, g_n \in \mathbb{N}$ and
 values $v_1, \ldots, v_n \in \mathbb{N}$. Also given is a capacity $b \in \mathbb{N}$.
@@ -3976,7 +4013,7 @@ $g_1, \ldots, g_n$ and capacity $b$.
     {\varepsilon}
   \rfloor) = \mathcal{O}(\frac{n^3}{\varepsilon} + n^3)$
   so polynomial in $n$ \emph{and} $\frac{1}{\varepsilon}!$.
-  This is fine for FPTAS.
+  This is fine for \cls{FPTAS}.
 
 Still to show: $(1 + \varepsilon)$ approximation.
 
@@ -4016,22 +4053,22 @@ So we get
 In the field of approximation algorithms we distinguish ``positive results''
 (by providing an appropriate approximation algorithm) and ``negative results''
 (results of the structure ``Problem Q cannot be approximated with quality guarantee
-$< c$ if \dots (eg. P $\neq$ NP)'').
+$< c$ if \dots (eg. P $\neq$ \cls{NP})'').
 
 Several technique to derive negative results (non-approximations) do exist:
 
 \subsection{Gap technique}
 %
-This technique is derived from the NP-hardness results.
+This technique is derived from the \cls{NP}-hardness results.
 We use a gap-problem as basis. \\
 More precisely: Given an optimization problem $Q$ where all inputs $x$ satisfy
 $v_{\text{opt}}(x) \leq a$ or $v_{\text{opt}}(x) \geq b > a$ and which
-is NP-complete. The problem of determining which case ($a$ or $b$) is given,
+is \cls{NP}-complete. The problem of determining which case ($a$ or $b$) is given,
 is called $(a, b)$-gap-problem.
 
 Assuming there exists an approximation algorithm $A$ (therefore $A$ has
 polynomial runtime) with performance guarantee $< \frac{b}{a}$ for the
-$(a, b)$-gap-problem, $P = NP$ would follow. Such an approximation algorithm
+$(a, b)$-gap-problem, $P = \cls{NP}$ would follow. Such an approximation algorithm
 allows us to distinguish between both cases.
 
 \textbf{Theorem.}
@@ -4040,7 +4077,7 @@ with performance guarantee $\frac{b}{a}$ if $\cls{P} \neq \cls{NP}$.
 
 \subsubsection{Example: TSP}
 %
-The Hamiltonian cycle problem is NP-complete. Given an undirected graph
+The Hamiltonian cycle problem is \cls{NP}-complete. Given an undirected graph
 $G = (V, E)$ and $|V| = n$. Construct a distance matrix $n\times n$ for TSP
 $D = (d_{ij})$.
 \[
@@ -4082,7 +4119,7 @@ Thus if $\cls{P} \neq \cls{NP}$, $TSP \notin APX$.
   \item for a minimization problem only values with integers as
         target function values are possible and
   \item decision whether $v_{\text{opt}}(x) \leq k$
-        is NP-complete
+        is \cls{NP}-complete
 \end{itemize}
 then there is no approxmation algorithm with performance guarantee
 $< 1 + \frac1{k}$. This is a result for $(k, k+1)$-gap-problems.
@@ -4108,7 +4145,7 @@ But there exists an asymptotical PTAS for BIN-Packing.
 \end{spec}
 
 We can decide this in polynomial time for $k=1$ and $k=2$.
-For $k\geq 3$ this is an NP-complete problem ($(3, 4)$-gap-problem).
+For $k\geq 3$ this is an \cls{NP}-complete problem ($(3, 4)$-gap-problem).
 Thus there is no approximation algorithm with performance guarantee
 $< \frac43$ if $\cls{P} \neq \cls{NP}$.
 
@@ -4140,21 +4177,25 @@ in different copies. We have to show that $\chi(G_K) = K \cdot \chi(G)$.
 If $\cls{P} \neq \cls{NP}$, $\cls{NP}$-hard optimization problems with ``small solutions''
 (ie. $\exists$ polynomial $p$: $\forall x \in S(x): v(x, s) \in \mathbb{Z}_0^t$
 and $v(x, s) \leq p(|x|)$ with $S(x)$ as the set of valid solutions and
-$v(x, s)$ as target function value) have no FPTAS.
+$v(x, s)$ as target function value) have no \cls{FPTAS}.
 
 \textbf{Corollary.}
-If $\cls{P} \neq \cls{NP}$ there does not exist a FPTAs for \emph{strong} NP-hard problems.
+If $\cls{P} \neq \cls{NP}$ there does not exist a \cls{FPTAS} for \emph{strong} \cls{NP}-hard problems.
 
 Typical problems with ``small solution values'':
-\probl{CLIQUE}, \probl{MAX-SAT}, \probl{VERTEX COVER}.
-And unlike \probl{KNAPSACK}, \probl{PARTITION}.
+\begin{itemize}
+  \item \probl{Clique}
+  \item \probl{MaxSAT}
+  \item \probl{Vertex-Cover}
+\end{itemize}
+And unlike \probl{Knapsack}, \probl{Partition}.
 
 \subsection{Construction at basis of PCP results}
 %
 PCP theorem in our previous definition: $\cls{NP} = \cls{PCP}(\log{n}, 1)$.
 From this point of view we cannot find any relation to approximation algorithms.
 
-Now consider MAX-3SAT.
+Now consider \probl{Max-3-SAT}.
 
 \begin{spec}
   \given{3SAT equation $\phi$}
@@ -4184,11 +4225,11 @@ It immediately follows the following corollary.
 
 \textbf{Corollary.}
 There exists a constant $\rho > 1$ such that if an $\rho$ approximation
-algorithm for MAX-3-SAT exists, $\cls{P} = \cls{NP}$.
-Therefore approximation for MAX-3-SAT is not arbitrary.
+algorithm for \probl{Max-3-SAT} exists, $\cls{P} = \cls{NP}$.
+Therefore approximation for \probl{Max-3-SAT} is not arbitrary.
 It can be close to $1$.
 
-With an $\rho$ approximation algorithm $A$ for MAX-3-SAT we get a polynomial
+With an $\rho$ approximation algorithm $A$ for \probl{Max-3-SAT} we get a polynomial
 algorithm for deciding whether $x \in L$.
 
 \textbf{Remark.} The classical Cook-Levin idea is not applicable
@@ -4227,7 +4268,7 @@ $\phi$ is called satisfiable if $\operatorname{val}(\phi) = 1$.
     (denote $\phi$ as No instance of $\rho$-GAP q-CSP)
 \end{itemize}
 
-We state that $\rho$-GAP q-CSP is NP-hard for every language $L \in \cls{NP}$,
+We state that $\rho$-GAP q-CSP is \cls{NP}-hard for every language $L \in \cls{NP}$,
 if there is a polynomial time computable function $f$ which maps strings
 to q-CSP instances such that
 \[
@@ -4253,15 +4294,15 @@ Now we have 3 equivalent definitions of the PCP theorem:
       x \notin L \Rightarrow \operatorname{val}(f(x)) < g
     \]
   \item There exists a $q \in \mathbb{N}$ and $\rho \in (0,1)$ such that
-        $\rho$-GAP q-CSP is NP-hard.
+        $\rho$-GAP q-CSP is \cls{NP}-hard.
 \end{enumerate}
 
 \subsubsection{The first definition implies the third}
 %
 Is $\cls{NP} \subseteq \cls{PCP}(\log{n}, 1)$.
-We show that $\frac12$-GAP q-CSP is NP-hard for appropriate constant.
+We show that $\frac12$-GAP q-CSP is \cls{NP}-hard for appropriate constant.
 
-It's enough that show only a single NP-complete language $L$
+It's enough that show only a single \cls{NP}-complete language $L$
 (eg. reduce 3SAT to $\frac12$-GAP q-CSP for appropriate constant
 $q$). From $\cls{NP} \subseteq \cls{PCP}(\log{n}, 1)$ it follows that
 there is a PCP verifier such that the verifier $V$ has a constant number
@@ -4281,11 +4322,11 @@ Because $V$ has polynomial runtime the transformation of $x$ to $\phi$ has
 also polynomial runtime. Because $V$ is our PCP verifier, for $x \in \probl{3SAT}$
 (x must be satisfiable) its given that $\operatorname{\phi} = 1$ and for
 $x \notin \probl{3SAT}$, $\operatorname{val}(\phi) \leq \frac12$.
-Therefore $\frac12$-GAP $q$-CSP NP-hard.
+Therefore $\frac12$-GAP $q$-CSP \cls{NP}-hard.
 
 \subsection{The third definition implies the first}
 %
-Assume $\rho$-GAP $q$-CSP is NP-complete for constant $q \in \mathbb{N},
+Assume $\rho$-GAP $q$-CSP is \cls{NP}-complete for constant $q \in \mathbb{N},
 \rho \in (0,1)$. This can be translated to PCP-system with $q$ proof bits,
 logarithmical number of random bits and error probability $\leq \rho$ for
 every language $L$:
@@ -4310,7 +4351,7 @@ that the second definition implies the third. We have to show that
 the third definition implies the second.
 
 Is $\varepsilon > 0$ and $q \in \mathbb{N}$ such that
-$(1 - \varepsilon)$-GAP $q$-CSP is NP-hard ($q, \varepsilon \exists$
+$(1 - \varepsilon)$-GAP $q$-CSP is \cls{NP}-hard ($q, \varepsilon \exists$
 because of the third definition).
 
 Is $\set{\phi_i}$ a $q$-CSP instance with $n$ variables and $m$ constraints.
@@ -4377,60 +4418,57 @@ and C the third.
     $\operatorname{val}(\phi)$ for a No instance.
 \end{description}
 
-We now know that (if $\cls{P} \neq \cls{NP}$) MAX-3-SAT cannot be
-approximated as close to $q$ as we wish (NP-hard problem).
+We now know that (if $\cls{P} \neq \cls{NP}$) \probl{Max-3-SAT} cannot be
+approximated as close to $q$ as we wish (\cls{NP}-hard problem).
 
 But no particular value $\stackrel{\sim}{g}$ follows from the
 ideas above such that $\stackrel{\sim}{q}$-approximation of
-MAX-3-SAT is NP-hard.
+\probl{Max-3-SAT} is \cls{NP}-hard.
 
 Hastad was able (with an improved version of the PCP theorem) to
 show for 3SAT that for all $\varepsilon > 0$ if there exists a
-$(\frac87 - \varepsilon)$-approximation of MAX-3-SAT, $\cls{P}
+$(\frac87 - \varepsilon)$-approximation of \probl{Max-3-SAT}, $\cls{P}
 \neq \cls{NP}$ follows.
 
-\section{Further negative approximation results}
+\subsection{Further negative approximation results}
 %
 Other approximation results that follow from the second PCP-theorem definition.
-So far we have considered MAX-3-SAT and CSP.
+So far we have considered \probl{Max-3-SAT} and CSP.
 
-Consider \probl{VERTEX COVER} (minimum cardinality) and
-\probl{INDEPENDENT SET} (maximum cardinality, corresponds to \probl{STABLE SET}).
+Consider \probl{Vertex-Cover} (minimum cardinality) and
+\probl{Independent-Set} (maximum cardinality, corresponds to \probl{Stable-Set}).
 
 \textbf{Theorem.}
   There exists a constant $\gamma > 1$ such that $\gamma$-approximation
-  for \probl{VERTEX COVER} is NP-hard.
+  for \probl{Vertex-Cover} is \cls{NP}-hard.
   For all $\beta > 1$, a $\beta$-approximation of
-  \probl{INDEPENDENT SET} is NP-hard.
+  \probl{Independent-Set} is \cls{NP}-hard.
 
 The second theorem is stronger than the first theorem (``for all'').
-$\probl{VERTEX COVER} \in \cls{APX}$ (compare with $2$-approximation
+$\probl{Vertex-Cover} \in \cls{APX}$ (compare with $2$-approximation
 algorithm from start of this chapter).
 
-\subsection{\probl{INDEPENDENT SET}}
+\subsubsection{\probl{Independent-Set}}
 %
 \[
-  \probl{CLIQUE} \notin \cls{APX} \quad \text{if } \cls{P} \neq \cls{NP}
+  \probl{Clique} \notin \cls{APX} \quad \text{if } \cls{P} \neq \cls{NP}
 \]
 
-\probl{INDEPENDENT SET} and \probl{VERTEX COVER} are equivalent in regards of
+\probl{Independent-Set} and \probl{Vertex-Cover} are equivalent in regards of
 the corresponding optimization problem, but no statement (or equivalence)
 for approximation follows from this.
 
-In a \probl{VERTEX COVER} all vertices are covered (complement of
-\probl{VERTEX COVER} is an \probl{INDEPENDENT SET}).
+In a \probl{Vertex-Cover} all vertices are covered (complement of
+\probl{Vertex-Cover} is an \probl{Independent-Set}).
 
-Is $N_{VC}$ the minimal cardinality of a \probl{VERTEX COVER} and is $N_{IS}$
-the maximal cardinality of an \probl{INDEPENDENT SET}. Is $n$ the number
+Is $N_{VC}$ the minimal cardinality of a \probl{Vertex-Cover} and is $N_{IS}$
+the maximal cardinality of an \probl{Independent-Set}. Is $n$ the number
 of vertices in $G$. Then:
 \[
   N_{VC} = n - N_{IS}
 \]
 
-A $\beta$-approximation for \probl{INDEPENDENT SET} returns \probl{INDEPENDENT
-SET} of size $\frac{1}{\beta} N_{IS}$. If you want to use this for \probl{VERTEX
-COVER}, we get \probl{VERTEX COVER} with cardinality $n - \frac{1}{\beta} N_{IS}$.
-This provide us approximation guarantee:
+A $\beta$-approximation for \probl{Independent-Set} returns \probl{Independent-Set} of size $\frac{1}{\beta} N_{IS}$. If you want to use this for \probl{Vertex-Cover}, we get \probl{Vertex-Cover} with cardinality $n - \frac{1}{\beta} N_{IS}$. This provide us approximation guarantee:
 \[
   \frac{n - \frac{1}{\beta} N_{IS}}{n - N_{IS}}
 \]
@@ -4438,11 +4476,11 @@ This can be arbitrarily bad, especially if IS is close to $n$. This is no
 surprise if we consider the last theorem. We want to provide a proof for
 this theorem.
 
-\subsection{Proof the last theorem}
+\subsubsection{Proof of the last theorem}
 %
-First we show (using the PCP theorem) for \probl{INDEPENDENT SET} and
-\probl{VERTEX COVER} that there is some constant $\rho > 1$
-such that $\rho$-approximation is NP-hard.
+First we show (using the PCP theorem) for \probl{Independent-Set} and
+\probl{Vertex-Cover} that there is some constant $\rho > 1$
+such that $\rho$-approximation is \cls{NP}-hard.
 
 \textbf{Lemma.}
   There exists a polynomially computable transformation $f$ of 3SAT equations
@@ -4451,36 +4489,36 @@ such that $\rho$-approximation is NP-hard.
   cardinality $\operatorname{val}(\phi) \cdot \frac{n}7$.
 
 \textbf{Proof.}
-  The proof follows from the classical NP-completeness reduction of
-  \probl{INDEPENDENT SET}.
+  The proof follows from the classical \cls{NP}-completeness reduction of
+  \probl{Independent-Set}.
 
 \textbf{Corollary.}
   If $\cls{P} \neq \cls{NP}$ there exists constants $\rho, \rho' > 1$ such
-  \probl{INDEPENDENT SET} is not $\rho$-approximable and \probl{VERTEX COVER}
+  \probl{Independent-Set} is not $\rho$-approximable and \probl{Vertex-Cover}
   is not $\rho'$-approximable.
 
 \textbf{Proof.}
-  Is $L$ a language in NP. From the second PCP-theorem definition we know
-  that decision version of $L$ is reducible to approximation of MAX-3-SAT
+  Is $L$ a language in \cls{NP}. From the second PCP-theorem definition we know
+  that decision version of $L$ is reducible to approximation of \probl{Max-3-SAT}
   Reduction provides a 3SAT equation $\phi$ which is either satisfiable
   $\operatorname{val}(\phi) = 1$ or $\operatorname{val}(\phi) < \rho$ with $\rho < 1$.
   Now we use the reduction from the Lemma:
   \[
-    \frac{1}{\rho} \text{ approximation of \probl{INDEPENDENT SET}}
-      \rightarrow \frac{1}{\rho} \text{ approximation of MAX-3-SAT}
+    \frac{1}{\rho} \text{ approximation of \probl{Independent-Set}}
+      \rightarrow \frac{1}{\rho} \text{ approximation of \probl{Max-3-SAT}}
   \]
   This is a statement thatn $\frac{1}{\rho}$-approximation ($\rho' > 1$) for
-  \probl{INDEPENDENT SET} is NP-hard.
+  \probl{Independent-Set} is \cls{NP}-hard.
 
-Regarding \probl{VERTEX COVER}:
+Regarding \probl{Vertex-Cover}:
 Minimal vertex cover which can be derived from graph with the reduction
 has cardinality $n - \operatorname{val}(\phi)\frac{n}{7}$.
-So if \probl{VERTEX COVER} has a $\rho''$ approximation with
+So if \probl{Vertex-Cover} has a $\rho''$ approximation with
 $\rho'' = \frac{7 - \frac{1}{\rho}}{6}$ then we could find a
 vertex cover with size $\rho' \cdot (n - \frac{n}{7})$ in case
 $\operatorname{val}(\phi) = 1$ and this is $\leq n - \rho \cdot \frac{h}7$.
 We could distinguish between $\operatorname{val}(\phi) = 1$ and
-$\operatorname{val}(\phi) < \rho$ which is NP-hard.
+$\operatorname{val}(\phi) < \rho$ which is \cls{NP}-hard.
 
 Now we proof the theorem.
 Given is a graph $G$ with $n$ vertices.
@@ -4502,7 +4540,7 @@ The runtime is therefore $n^k$; polynomial.
 
 In the following lectures we want to develop a reduction term for approximation.
 
-\section{Reduction of approximation problems}
+\subsection{Reduction of approximation problems}
 %
 We need an appropriate reduction term for approximation.
 
@@ -4567,11 +4605,11 @@ A \leq_{\cls{PTAS}} B$ and $B \leq_{\cls{PTAS}} A$.
   $P_1 =_{\cls{PTAS}} P_2$.
 
 \textbf{Theorem.}
-  $\probl{MAX-3-SAT} \leq_{\cls{PTAS}} \probl{CLIQUE}$.
+  $\probl{MAX-3-SAT} \leq_{\cls{PTAS}} \probl{Clique}$.
 
 \textbf{Proof.}
   Consider the classical reduction. 3SAT equation $\phi$
-  with clauses $C_1, \ldots, C_m$. $\probl{3SAT} \leq_p \probl{CLIQUE}$.
+  with clauses $C_1, \ldots, C_m$. $\probl{3SAT} \leq_p \probl{Clique}$.
 
 $f(\phi) = G$ with $G = (V, E)$. In the classical reduction we use,
 that $\phi$ is satisfiable $\Leftrightarrow f(\phi)$ has clique of
@@ -4622,10 +4660,10 @@ We get a 3SAT equation $\phi'$ with $2m$ clauses.
 
 \textbf{Next goal.} (completeness term)
   Introduce class \cls{NPO} as abstract class for optimization problem
-  analogously to NP for decision problems.
+  analogously to \cls{NP} for decision problems.
 
-\textbf{Definition.} (NPO)
-  An optimization problem $A$ corresponds to class NPO, if
+\textbf{Definition.} (\cls{NP}O)
+  An optimization problem $A$ corresponds to class \cls{NP}O, if
 \begin{itemize}
   \item
     for all $x$ and $s(x)$ the target function value $v(x, s)$
@@ -4638,21 +4676,21 @@ We get a 3SAT equation $\phi'$ with $2m$ clauses.
 
 \begin{center}
   \begin{tabular}{lc}
-    MIN-NPO & Minimization problem in NPO \\
-    MAX-NPO & Maximization problem in NPO
+    MIN-NPO & Minimization problem in \cls{NP}O \\
+    MAX-NPO & Maximization problem in \cls{NP}O
   \end{tabular}
 \end{center}
 
 \textbf{Definition.}
-  An optimization problem $A$ is NPO-complete iff
+  An optimization problem $A$ is \cls{NP}O-complete iff
 \begin{itemize}
   \item $A \in \cls{NPO}$
   \item $\forall B \in \cls{NPO}: B \leq_{\cls{PTAS}} A$
 \end{itemize}
 
-In the following we consider an optimization problem of NPO.
+In the following we consider an optimization problem of \cls{NP}O.
 Therefore we are interested for APX, PTAS, \dots{} now the intersection
-of NPO with the classes defined previously.
+of \cls{NP}O with the classes defined previously.
 
 The completeness definition for PTAS and APX is analogous.
 
@@ -4672,21 +4710,21 @@ that MAX-W-SAT is MAX-NPO complete and MIN-W-SAT is MIN-NPO complete.
   $a \in \set{0,1}^n$ truth assignments.
 
 Furthermore we can show that MAX-W-SAT $=_{\text{PTAS}}$ MIN-W-SAT.
-MAX-W-SAT and MIN-W-SAT are NPO-complete.
+MAX-W-SAT and MIN-W-SAT are \cls{NP}O-complete.
 
-Another complexity class in relation with approximation is MAX-SNP
+Another complexity class in relation with approximation is \probl{MaxSNP}
 (concept of Paradimitriou and Yannakakis).
 
-\textbf{Definition.} (Strict NP)
+\textbf{Definition.} (Strict \cls{NP})
   All properties of the structure
   \[
     \exists s \forall x_1 \forall x_2, \ldots, \forall x_n:
     \Phi(S, G, x_1, \ldots, x_n)
   \]
-  where $\Phi$ is a quantorfree expression of first order, which contains
+  where $\Phi$ is a quantifier-free expression of first order, which contains
   the variables $x_1, \ldots, x_n$ and contains graph structure $G$ and $S$.
 
-Step towards optimization problem MAX-SNP:
+Step towards optimization problem \probl{MaxSNP}:
 \[
   \max_S \left|
     \set{(x_1, \ldots, x_n) \in V^n | \Phi(G_1, G_2, \ldots, G_m, S, x_1, \ldots, x_n)}
@@ -4740,7 +4778,7 @@ $S$ represents a variable with truth value True.
 
 \subsubsection{Example 3: MAX}
 %
-\probl{INDEPENDENT SET} in graph $G$ with restricted degree $k$.
+\probl{Independent-Set} in graph $G$ with restricted degree $k$.
 
 Representation of $G$ as $(k+1)$-ary relation $H$.
 $H$ contains $|V|$ $(k+1)$-tuples.
@@ -4761,18 +4799,24 @@ $S$ is an independent set.
   We can show the following.
 
 \begin{itemize}
-  \item Closure of MAX-SNP under PTAS reduction is APX.
-  \item Every problem in MAX-SNP has an approximation algorithm
+  \item Closure of \probl{MaxSNP} under PTAS reduction is APX.
+  \item Every problem in \probl{MaxSNP} has an approximation algorithm
         with constant guarantee.
-  \item \probl{INDEPENDENT SET} $\notin$ \cls{MAX-SNP},
+  \item \probl{Independent-Set} $\notin$ \probl{MaxSNP},
         if $\cls{P} \neq \cls{NP}$.
 \end{itemize}
 
-\section{Positive results}
+%\section{Positive results}
 \subsection{Linear-integer optimization models (``rounding'')}
-\subsubsection{MAX-SAT}
 %
-\textbf{Given.} SAT equation $\phi$ with variables $x_1, \ldots, x_n$ and clauses $C_1, \ldots, C_m$.
+The following section discusses positive results.
+
+\subsubsection{\probl{MaxSAT}}
+%
+\begin{spec}
+  \given{SAT equation $\phi$ with variables $x_1, \ldots, x_n$ and clauses $C_1, \ldots, C_m$.}
+  \find{Maximum number of satisfiable clauses}
+\end{spec}
 
 For clause $C_i$ denominate $V_i^+$ the set of non-negative variables in $C_i$.
 $V_i^-$ is the set of negative variables in $C_i$.
@@ -4874,7 +4918,7 @@ Another helping result:
   \Rightarrow E(X) \geq \sum_{j=1}^m (1 - (1 - \frac1{k_j})^{k_j}) \cdot z_j^*
 \]
 
-Optimal value of MAX-SAT $\leq$ OPT value of $\text{LP}_{\text{MS}}$.
+Optimal value of \probl{MaxSAT} $\leq$ OPT value of $\text{LP}_{\text{MS}}$.
 \[
   \sum_{j=1}^m z_j^* \geq OPT(\underbrace{\phi}_{\text{MAX SAT equation}})
 \] \[
@@ -4890,11 +4934,11 @@ QED.
 
 Further improvements can be achieved with semidefinite optimization.
 
-\subsubsection{\probl{MIN-WEIGHT VERTEX COVER}}
+\subsubsection{\probl{Min-Weight Vertex Cover}}
 %
 \begin{spec}
   \given{Undirected graph $G = (V, E)$. Edge weights $w_i \geq 0  \forall i \in V$.}
-  \find{\probl{VERTEX COVER} with minimal weight sum.}
+  \find{\probl{Vertex-Cover} with minimal weight sum.}
 \end{spec}
 
 In $\text{IP}_{\text{VC}}$ (different formulation, but again no optimization follows immediately)
@@ -4928,30 +4972,272 @@ $\tilde{x}$ is valid solution for $\text{IP}_{\text{VC}}$.
 This gives us guarantee 2 (compare with Vertex Cover problem at
 beginning of lecture notes).
 
-Website: \href{http://www.nada.kth.se/~viggo/wwwcompendium/}{``A compendium of NP optimization problems''}.
+Website: \href{http://www.nada.kth.se/~viggo/wwwcompendium/}{``A compendium of \cls{NP} optimization problems''}.
 
 \begin{appendices}
-\section{List of algorithms}
-\section{List of complexity classes}
+\section{List of algorithms or interactive protocols}
+%
 \begin{itemize}
-  \item \cls{IP}
-  \item \cls{PTAS}
-  \item \cls{APX}
-  \item \cls{FPTAS}
-  \item \cls{P}
-  \item \cls{NP}
-  \item \cls{PCP}
-  \item \cls{NPO}
-  \item \cls{FP}
-  \item \cls{RP}
-  \item \cls{ZPP}
-  \item \cls{PP}
-  \item \cls{BPP}
-  \item \cls{PSPACE}
-  \item \cls{PH}
-  \item \cls{FP}
-  \item \cls{NEXP}
+  \item Design and analyze an algorithm to determine whether a perfect matching exists in a bipartite graph (page~\pageref{sec:perfect-matching-algorithm}).
+  \item Design and analyze an algorithm to decide 2-SAT and 3-SAT instances probabilistically (page~\pageref{sec:sat-algorithm}).
+  \item Design and analyze an algorithm to test whether two given polynomials are identical (page~\pageref{sec:identity-test-polynomials-algorithm}).
+  \item Design and analyze an algorithm for primality testing (page~\pageref{sec:primality-test-algorithm}).
+  \item Design and analyze an algorithm for the FSAT problem using a SAT oracle (page~\pageref{sec:fsat}).
+  \item Design and analyze an algorithm for the Happy Net Problem (page~\pageref{sec:happy-net-problem}).
+  \item Design and analyze an interactive protocol to show that $\overline{\probl{GI}} \in \cls{IP}$ (page~\pageref{src:gi-ip}).
+  \item Design and analyze an approximation algorithm for Bin Packing (page~\pageref{sec:approx-bin-pack}).
+  \item Design and analyze an approximation algorithm for Scheduling and Knapsack (page~\pageref{sec:scheduling} and \pageref{sec:approx-knapsack})
 \end{itemize}
+
+
+\section{List of mentioned complexity classes}
+%
+More than 496~complexity classes are currently maintained in the \href{https://complexityzoo.uwaterloo.ca/Complexity_Zoo}{Complexity Zoo}.
+
+\begin{minipage}{0.3\textwidth}
+  \begin{itemize}\itemsep0pt
+    \item \cls{APX}
+    \item \cls{BPP}
+    \item \cls{coIP}
+    \item \cls{DP}
+    \item \cls{FP}
+    \item \cls{FPTAS}
+    \item \cls{IP}
+  \end{itemize}
+\end{minipage}
+\begin{minipage}{0.3\textwidth}
+  \begin{itemize}\itemsep0pt
+    \item \cls{mIP}
+    \item \cls{NEXP}
+    \item \cls{NP}
+    \item \cls{NPO}
+    \item \cls{P}
+    \item \cls{PCP}
+    \item \cls{PH}
+    \item \cls{PP}
+  \end{itemize}
+\end{minipage}
+\begin{minipage}{0.3\textwidth}
+  \begin{itemize}\itemsep0pt
+    \item \cls{PSPACE}
+    \item \cls{PTAS}
+    \item \cls{PZK}
+    \item \cls{RP}
+    \item \cls{UP}
+    \item \cls{ZPP}
+    \item \cls{\#P}
+    \item \cls{$\oplus$P}
+  \end{itemize}
+\end{minipage}
+
+The following definitions got extracted from \href{https://complexityzoo.uwaterloo.ca/Complexity_Zoo}{Complexity Zoo}.
+
+\begin{description}
+  \item[\cls{APX}]
+    The subclass of \cls{NPO} problems that admit constant-factor approximation algorithms.  (I.e., there is a polynomial-time algorithm that is guaranteed to find a solution within a constant factor of the optimum cost.) 
+    
+    Contains \cls{PTAS}. Equals the closure of \probl{MaxSNP} and of \probl{MaxNP} under \cls{PTAS} reduction.
+
+  \item[\cls{BPP}] The class of decision problems solvable by an \cls{NP} machine such that
+    \begin{enumerate}
+      \item If the answer is ``yes'' then at least $\frac23$ of the computation paths accept.
+      \item If the answer is ``no'' then at most $\frac13$ of the computation paths accept.
+    \end{enumerate}
+    (Here all computation paths have the same length.)
+
+    Often identified as the class of feasible problems for a computer with access to a genuine random-number source.
+    Contained in $\sigma 2P \cap \prod 2P$, and indeed in \cls{ZPPNP}.
+
+    If \cls{BPP} contains \cls{NP}, then \cls{RP} = \cls{NP} and \cls{PH} is contained in \cls{BPP}.
+
+  \item[\cls{DP}] \cls{DP} = \cls{BH2}, the second level of the Boolean hierarchy.
+
+  \item[\cls{FP}] Sometimes defined as the class of functions computable in polynomial time by a Turing machine.  (Generalizes P, which is defined in terms of decision problems only.)
+
+    However, if we want to compare \cls{FP} to \cls{FNP}, we should instead define it as the class of \cls{FNP} problems (that is, polynomial-time predicates $P(x,y)$) for which there exists a polynomial-time algorithm that, given x, outputs any $y$ such that $P(x,y)$.  That is, there could be more than one valid output, even though any given algorithm only returns one of them.
+
+    \cls{FP} = \cls{FNP} if and only if \cls{P} = \cls{NP}.
+
+  \item[\cls{FPTAS}] The subclass of \cls{NPO} problems that admit an approximation scheme in the following sense.  For any $\varepsilon > 0 $, there is an algorithm that is guaranteed to find a solution whose cost is within a $1 + \varepsilon$ factor of the optimum cost.  Furthermore, the running time of the algorithm is polynomial in $n$ (the size of the problem) and in $\frac1{\varepsilon}$.
+
+    Contained in \cls{PTAS} and \cls{FPT}.
+
+  \item[\cls{IP}] The class of decision problems for which a ``yes'' answer can be verified by an interactive proof.  Here a probabilistic polynomial-time verifier sends messages back and forth with an all-powerful prover.  They can have polynomially many rounds of interaction. Given the verifier's algorithm, at the end:
+    \begin{enumerate}
+      \item If the answer is ``yes'', the prover must be able to behave in such a way that the verifier accepts with probability at least $\frac23$ (over the choice of the verifier's random bits).
+      \item If the answer is ``no'', then however the prover behaves the verifier must reject with probability at least $\frac23$.
+    \end{enumerate}
+
+    With the motivation of providing a framework for the introduction of zero-knowledge proofs. Interestingly, the power of general interactive proof systems is not decreased if the verifier is only allowed random queries (i.e., it merely tosses coins and sends any outcome to the prover). The latter model, known as the Arthur-Merlin (or public-coin) model was introduced independently (but later), and a strong equivalent (which preserves the number of rounds) is proved.
+
+    Often, it is required that the prover can convince the verifier to accept correct assertions with probability 1; this is called \emph{perfect completeness}.
+    However, the definitions with one-sided and two-sided error can be shown to be equivalent.
+
+
+    First demonstration to the power of interactive proofs was given by showing that for graph nonisomorphism (a problem not known in \cls{NP}) has such proofs. Five years later is was shown that \cls{IP} contains \cls{PH}, and indeed (this was discovered only a few weeks later) equals \cls{PSPACE}.  On the other hand, \cls{coNP} is not contained in \cls{IP} relative to a random oracle.
+
+  \item[\cls{mIP}] Same as \cls{IP}, except that now the verifier can exchange messages with many provers, not just one.  The provers cannot communicate with each other during the execution of the protocol, so the verifier can ``cross-check'' their assertions (as with suspects in separate interrogation rooms).
+
+    Let \cls{MIP[$k$]} be the class of decision problems for which a ``yes'' answer can be verified with $k$ provers.  Then for all $k>2$, \cls{MIP[$k$]} = \cls{MIP[$2$]} = \cls{MIP}.
+
+    MIP equals NEXP; this is a famous non-relativizing result.
+
+  \item[\cls{NEXP}] Nondeterministic exponential time (i.e. \cls{NTIME($2p(n)$)} for $p$ a polynomial). Equals \cls{MIP} (but not relative to all oracles). Does not equal \cls{NP}. Does not equal \cls{EXP} if and only if there is a sparse set in \cls{NP} that is not in \cls{P}.
+
+  \item[\cls{NP}] An ``NP machine'' is a nondeterministic polynomial-time Turing machine. Then \cls{NP} is the class of decision problems solvable by an \cls{NP} machine such that
+    \begin{enumerate}
+      \item If the answer is ``yes'', at least one computation path accepts.
+      \item If the answer is ``no'', all computation paths reject.
+    \end{enumerate}
+
+    Equivalently, \cls{NP} is the class of decision problems such that, if the answer is ``yes'', then there is a proof of this fact, of length polynomial in the size of the input, that can be verified in \cls{P} (i.e. by a deterministic polynomial-time algorithm).  On the other hand, if the answer is ``no'', then the algorithm must declare invalid any purported proof that the answer is ``yes''.
+
+    For example, the \probl{SAT} problem is to decide whether a given Boolean formula has any satisfying truth assignments. \probl{SAT} is in \cls{NP}, since a ``yes'' answer can be proved by just exhibiting a satisfying assignment.
+
+    A decision problem is \cls{NP}-complete if (1) it is in \cls{NP}, and (2) any problem in \cls{NP} can be reduced to it (under some notion of reduction).  The class of \cls{NP}-complete problems is sometimes called \cls{NPC}.
+
+    That \cls{NP}-complete problems exist is immediate from the definition.  The seminal result of Cook, Karp, and Levin is that many natural problems (that have nothing to do with Turing machines) are \cls{NP}-complete.
+
+    The first such problem to be shown NP-complete was SAT.  Other classic NP-complete problems include:
+
+    \cls{NP} contains \cls{P}.
+
+    If \cls{P} equals \cls{NP}, then \cls{NP} equals its complement \cls{coNP}.  Whether \cls{NP} equals \cls{coNP} is also open.  \cls{NP} and \cls{coNP} can be extended to the polynomial hierarchy \cls{PH}.
+
+    If NP is in \cls{BPP} then \cls{PH} collapses to $\sigma 2P$.
+
+    An alternate characterization is \cls{NP} = \cls{PCP($\log{n}$, $\mathcal{O}(1)$)}.
+
+    Also, showed that \cls{NP} is precisely the class of decision problems reducible to a graph-theoretic property expressible in second-order existential logic. This leads to the subclass \cls{SNP}.
+
+  \item[\cls{NPO}] The class of function problems of the form, ``Find any $n$-bit string $x$ that maximizes a cost function $C(x)$, where $C$ is computable in \cls{FP} (i.e. polynomial-time).'' Contains \cls{APX}.
+
+  \item[\cls{P}] The class of decision problems solvable in polynomial time by a Turing machine.
+    Contains some highly nontrivial problems, including linear programming and finding a maximum matching in a general graph.
+
+    Contains the problem of testing whether an integer is prime, an important result that improved on a proof requiring an assumption of the generalized Riemann hypothesis.
+
+    A decision problem is \cls{P}-complete if it is in \cls{P}, and if every problem in \cls{P} can be reduced to it in \cls{L} (logarithmic space).  The canonical \cls{P}-complete problem is \probl{Circuit Evaluation}: given a Boolean circuit and an input, decide what the circuit outputs when given the input.
+
+    Important subclasses of \cls{P} include \cls{L}, \cls{NL}, \cls{NC}, and \cls{SC}.
+
+  \item[\cls{PCP}] The class of decision problems such that a ``yes'' answer can be verified by a probabilistically checkable proof, as follows.
+
+    The verifier is a polynomial-time Turing machine with access to $\mathcal{O}(r(n))$ uniformly random bits.  It has random access to a proof (which might be exponentially long), but can query only $\mathcal{O}(q(n))$ bits of the proof.
+
+    Then we require the following:
+    \begin{itemize}
+      \item If the answer is ``yes'', there exists a proof such that the verifier accepts with certainty.
+      \item If the answer is ``no'', then for all proofs the verifier rejects with probability at least $\frac12$ (over the choice of the $\mathcal{O}(r(n))$ random bits).
+    \end{itemize}
+
+    By definition \cls{NP} = \probl{PCP}$(0,\operatorname{poly}(n))$. \cls{MIP} = \probl{PCP}$(\operatorname{poly}(n),\operatorname{poly}(n))$.
+
+    \cls{NP} = \cls{PCP}$(\log{n}, \log{n})$. In fact, \cls{NP} = \cls{PCP}$(\log{n}, 1)$!
+
+    On the other hand, if \cls{NP} is contained in \cls{PCP}($o(\log{n}), o(\log{n})$), then \cls{P} = \cls{NP}.
+
+  \item[\cls{PH}] Let $\vartriangle 0P$ = $\sigma 0P$ = $\prod 0P$ = \cls{P}.  Then for $i>0$, let
+    \begin{itemize}
+      \item $\vartriangle_i P$ = \cls{P} with $\sigma_{i-1}P$ oracle.
+      \item $\sigma_i P$ = \cls{NP} with $\sigma_{i-1}P$ oracle.
+      \item $\prod_i P$ = \cls{coNP} with $\sigma_{i-1}P$ oracle.
+    \end{itemize}
+    Then PH is the union of these classes for all nonnegative constants $i$.
+
+    PH can also be defined using alternating quantifiers: it's the class of problems of the form, ``given an input $x$, does there exist a $y$ such that for all $z$, there exists a $w$ \dots such that $\phi(x,y,z,w,\ldots)$'', where $y,z,w,\ldots$ are polynomial-size strings and $\phi$ is a polynomial-time computable predicate.  It's not totally obvious that this is equivalent to the first definition, since the first one involves adaptive \cls{NP} oracle queries and the second one doesn't, but it is.
+
+    Contained in P with a \cls{PP} oracle. Contains \cls{BPP}.
+
+    Relative to a random oracle, \cls{PH} is strictly contained in \cls{PSPACE} with probability 1.
+
+  \item[\cls{PP}] The class of decision problems solvable by an NP machine such that
+    \begin{enumerate}
+      \item If the answer is ``yes'' then at least $\frac12$ of computation paths accept.
+      \item If the answer is ``no'' then less than $\frac12$ of computation paths accept.
+    \end{enumerate}
+
+    \cls{PP} is closed under union and intersection (this was an open problem for 14 years). Contains \cls{PNP[log]}.
+
+  \item[\cls{PSPACE}] The class of decision problems solvable by a Turing machine in polynomial space.
+
+    Equals \cls{NPSPACE}, \cls{AP}, \cls{IP}, and, assuming the existence of one-way functions, \cls{CZK}.
+    Contains \cls{P} with \cls{\#P} oracle.
+
+    Relative to a random oracle, \cls{PSPACE} strictly contains \cls{PH} with probability 1.
+
+    \cls{PSPACE} has a complete problem that is both downward self-reducible and random self-reducible.  It is the largest class with such a complete problem.
+
+  \item[\cls{PTAS}] The subclass of \cls{NPO} problems that admit an approximation scheme in the following sense.  For any $\varepsilon > 0$, there is a polynomial-time algorithm that is guaranteed to find a solution whose cost is within a $1 + \varepsilon$ factor of the optimum cost.  (However, the exponent of the polynomial might depend strongly on $\varepsilon$.)
+
+    Contains FPTAS, and is contained in APX.
+    As an example, the Traveling Salesman Problem in the Euclidean plane is in PTAS.
+
+  \item[\cls{PZK}] Same as \cls{SZK}, but now the two distributions must be identical, not merely statistically close.  (The ``two distributions'' are (1) the distribution over the verifier's view of his interaction with the prover, conditioned on the verifier's random coins, and (2) the distribution over views that the verifier can simulate without the prover's help.) Contained in SZK.
+
+  \item[\cls{RP}] The class of decision problems solvable by an \cls{NP} machine such that
+    \begin{enumerate}
+      \item If the answer is ``yes'', at least $\frac12$ of computation paths accept.
+      \item If the answer is ``no'', all computation paths reject.
+    \end{enumerate}
+
+    Contains the problem of testing whether an integer is prime, although this problem was subsequently shown to be in \cls{P}.
+
+  \item[\cls{UP}] The class of decision problems solvable by an NP machine such that
+    \begin{enumerate}
+      \item If the answer is ``yes'', exactly one computation path accepts.
+      \item If the answer is ``no'', all computation paths reject.
+    \end{enumerate}
+
+    ``Worst-case'' one-way functions exist if and only if \cls{P} does not equal \cls{UP}.  ``Worst-case'' one-way permutations exist if and only if \cls{P} does not equal \cls{UP} $\cap$ \cls{coUP}.  Note that these are weaker than the one-way functions and permutations that are needed for cryptographic applications.
+
+    There exists an oracle relative to which \cls{P} is strictly contained in \cls{UP} is strictly contained in \cls{NP}; indeed, these classes are distinct with probability 1 relative to a random oracle.
+
+  \item[\cls{ZPP}] Defined as \cls{RP} $\cap$ \cls{coRP}. Defined as the class of problems solvable by randomized algorithms that always return the correct answer, and whose expected running time (on any input) is polynomial.
+
+    Contains the problem of testing whether an integer is prime.
+
+  \item[\cls{coIP}] Complementary class of \cls{IP}.
+
+  \item[\cls{\#P}] The class of function problems of the form ``compute $f$(x),'' where $f$ is the number of accepting paths of an NP machine. The canonical \cls{\#P}-complete problem is \probl{\#SAT}. Any function in \probl{\#P} can be approximated to within a polynomial factor in \cls{BPP} with \cls{NP} oracle. Likewise, any problem in \probl{\#P} can be approximated to within a constant factor $\varepsilon$ by a machine in FP\textsuperscript{||NP} running in $\operatorname{poly}(n,\varepsilon^{-1})$ time.
+  \item[\cls{$\oplus$P}] The class of decision problems solvable by an \cls{NP} machine such that
+    \begin{itemize}
+      \item If the answer is ``yes'', then the number of accepting paths is odd.
+      \item If the answer is ``no'', then the number of accepting paths is even.
+    \end{itemize}
+\end{description}
+
+\section{Exam questions}
+%
+\begin{enumerate}
+  \item What does the Cook-Levin theorem state?
+  \item Define the probabilistic complexity classes \cls{RP}, \cls{co-\cls{RP}}, \cls{BPP}, \cls{PP} and \cls{ZPP}. Define their relation towards each other and \cls{P} and \cls{NP}. What are Monte-Carlo algorithms? What are Las-Vegas algorithms?
+  \item Formally define a Monte-Carlo turing machine.
+  \item Define the \probl{MajSat} problem. Classify \probl{MajSat} in terms of complexity classes.
+  \item Can you create a fair die with polynomial effort using an unfair die? How? What does it tell about probabilistic complexity classes?
+  \item What are function problems? Define the complexity class \cls{FP}. Give 2 example problems. What are total functions?
+  \item Define the TSP variants \probl{$\text{TSP}_{\text{DEC}}$}, \probl{EXACT-TSP}, \probl{TSP-COST} and \probl{TSP}.
+  % TODO
+  \item What is the polynomial hierarchy? What does it define? Which conclusions can we draw? Consider the \probl{QSAT$_i$} problem. In which level of the hierarchy is it contained?
+  \item What is the relation between \cls{BPP} and the polynomial hierarchy?
+  \item Define what a counting problem is. How is the class \cls{\#P} defined? Show at least two problems that are \cls{\#P}-complete.
+  \item What does the Theorem of Toda say?
+  \item What is the relation between \cls{PP} and \cls{\#P}?
+  \item Define the complexity class \cls{$\oplus$P}. Discuss \probl{$\oplus$SAT}, \probl{$\oplus$PERM}. Show that \cls{NP} $\subseteq$ RP$^{\cls{\oplus P}}$.
+  \item Discuss which interactive protocol variants exist and what their properties are. Discuss their relation to \cls{P} and \cls{NP}. Define the class \cls{IP}.
+  \item Define the perfect zero knowledge property. What does bit commitment mean?
+  \item What are the \emph{statistical zero knowledge property} and the \emph{computational zero knowledge property}?
+  \item Define the complexity class \cls{UP}. What is the relation between \cls{UP} and \cls{P}?
+  \item What does the PCP-Theorem say? What does PCP stand for? When is a decision problem part of $\probl{PCP}(r(n), q(n))$?
+  \item Discuss the linearity and consistency tests for functions.
+  \item Define the notion of approximation quality and what does $c$-approximation mean? Define the complexity classes \cls{APX} and \cls{APX*}.
+  \item What does \cls{PTAS} and \cls{FPTAS} stand for? Discuss the \probl{Max-Clique} and \probl{Vertex-Cover} problems in terms of approximability.
+  \item What is the gap technique? Illustrate it with TSP as an example. Derive the third definition of the PCP-Theorem.
+  \item How does reduction work for approximation problems?
+  \item Define the complexity class \cls{NPO}.
+  \item Consider \probl{MaxSAT} and \probl{Min-Weight Vertex Cover} as linear programming problems.
+\end{enumerate}
+
 \end{appendices}
 
 %%% Deutsche Übersetzung eines Abschnitts, welcher bereits im Skriptum vorkommt:
@@ -5098,7 +5384,7 @@ Website: \href{http://www.nada.kth.se/~viggo/wwwcompendium/}{``A compendium of N
 % \textbf{Definition (PTAS).}
 %   polynomial time approximation scheme.
 
-% \textbf{Definition (FPTAS).}
+% \textbf{Definition (\cls{FPTAS}).}
 %   fully polynomial time approximation scheme
 %   (runtime is polynomial in $|x|$ and in $\frac1{\varepsilon}$).
 
@@ -5113,7 +5399,7 @@ Website: \href{http://www.nada.kth.se/~viggo/wwwcompendium/}{``A compendium of N
 
 % Bei PTAS ist Laufzeit
 % $\mathcal{O}(n^{\frac1{\varepsilon}})$ mit $n = \mathcal{O}(|x|)$
-% erlaubt; bei FPTAS nicht.
+% erlaubt; bei \cls{FPTAS} nicht.
 
 % Offensichtlich $\cls{P} \subseteq \cls{FPTAS} \subseteq \cls{PTAS} \subseteq \cls{APX}$.
 
@@ -5139,7 +5425,7 @@ Website: \href{http://www.nada.kth.se/~viggo/wwwcompendium/}{``A compendium of N
 %   überdeckt wird (jede Kante in $E$ hat mindestens einen Endknoten
 %   in $V'$ und $V'$ minimale Kardinalität hat).
 
-% Für allgemeine Graph NP-schwer. Der Approximation-Algorithmus is interessant.
+% Für allgemeine Graph \cls{NP}-schwer. Der Approximation-Algorithmus is interessant.
 
 % \textbf{Approximationsalgorithmus:}
 % \begin{enumerate}
