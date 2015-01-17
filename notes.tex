@@ -288,39 +288,49 @@ for a practical error probability? (exponentially, it is easily feasible)
 
 \dateref{7th of Oct 2013}
 
-\subsection{Problem: Identity test for polynomials}
+\subsection{Problem: Polynomial Identity Testing}
 \label{sec:identity-test-polynomials-algorithm}
 %
-Polynomials are represented here as equations of an algebraic circuit
-(instead of the operators $\land, \lor$ and $\neg$ in classical booleans
-circuits, we have $+$, $-$ and $\cdot$) with $n$ variables $x_1, x_2, \ldots, x_n$
-represented as special directed graph. 
+\begin{spec}
+  \given{A polynomial}
+  \find{Is the given polynomial a zero-polynomial (hence equals to $0$)?}
+  \textbf{Equivalence.} Be aware that \emph{polynomial identity testing} equals \emph{polynomial equivalence checking}. $p_1(x) = p_2(x) \Leftrightarrow [p_1(x) - p_2(x)] = 0$ \par
+  \textbf{Example.} $- x\cdot x - y\cdot y + (x - y)(x + y)$ is a zero-polynomial whereas $x\cdot x$ is not. \par
 
-\drawing{tcs2_algebraic_circuit.pdf}
+  The instance can be encoded in various forms. Possible forms include:
+  \begin{itemize}
+    \item multivariate arithmetic expression over integers (arithmetic formula)
+    \item matrix with polynomial entries
+  \end{itemize}
+\end{spec}
 
-\[
-  x_1 x_2 + x_3
-\]
+Polynomials are represented here as equations of an algebraic circuit (instead of the operators $\land, \lor$ and $\neg$ in classical propositional logic, we have $+$, $-$ and $\cdot$ available) with $n$ variables $x_1, x_2, \ldots, x_n$
+represented as special directed graph. All vertices (which are not sources and are not inner vertices) do have in-degree 2 und are annotated with operators $\set{+, \cdot, -}$.
 
-All vertices (which are not sources and are not inner vertices) do have
-in-degree 2 und are annotated with operators $\set{+, \cdot, -}$.
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics{tcs2_algebraic_circuit.pdf}
+    \caption{Visual representation of algebraic circuit $x_1 x_2 + x_3$}
+  \end{center}
+\end{figure}
 
-\subsubsection{Sinks}
-%
 Remarks:
 \begin{itemize}
-  \item Extensions are possible.
+  \item Extensions to this problem are possible.
   \item Such a circuit creates a polynomials in $x_1, x_2, \ldots, x_n$.
 \end{itemize}
 
-Is \cls{ZEROP} the complexity class of algebraic circuits, which evaluate a polynomial (which is identical) to a zero-polynomial.
+\subsubsection{The class \cls{ZeroP}}
+%
+Let \cls{ZeroP} be the complexity class of algebraic circuits,
+which evaluate whether a polynomial (which is identical) is a zero-polynomial.
 
 \[
     c = c' \quad \Leftrightarrow \quad c - c' = 0
 \]
-This is why the name \cls{ZEROP} was chosen. A special case of this problem is exercise 1, we discussed previously.
+This is why the name \cls{ZeroP} was chosen. A special case of this problem is exercise 1, we discussed previously.
 
-\textbf{Problem:} Detection of \cls{ZEROP} is non-trivial (ie. is a polynomial P $\in$ ZEROP).
+\textbf{Problem:} Detection of \cls{ZeroP} is non-trivial (ie. is a polynomial $P \in$ \cls{ZeroP}).
 
 Consider for example
 \[
@@ -877,14 +887,14 @@ Is a total function problem and it is open whether there is a polynomial algorit
   \find{Is there a tour with length $\leq c^*$?}
 \end{spec}
 
-\subsubsection{EXACT-TSP}
+\subsubsection{\probl{Exact-TSP}}
 %
 \begin{spec}
   \given{$n\times n$ matrix $D$, value $c^*$}
   \find{Does the optimal tour has length $c^*$?}
 \end{spec}
 
-\subsubsection{TSP-COST}
+\subsubsection{\probl{TSP-Cost}}
 %
 \begin{spec}
   \given{$n\times n$ matrix $D$.}
@@ -2488,6 +2498,7 @@ In our definition of $\cls{IP}$ we had
 We take a look at interactive protocols and their complements.
 
 \subsection{Graph isomorphism (\probl{GI})}
+\label{sec:gi-ip}
 %
 \begin{spec}
   \given{
@@ -2498,6 +2509,7 @@ We take a look at interactive protocols and their complements.
 \end{spec}
 
 \subsection{Complement of graph isomorphism ($\overline{\probl{GI}}$)}
+\label{sec:gic-ip}
 %
 \begin{spec}
   \given{Same configuration as previously.}
@@ -4984,7 +4996,7 @@ Website: \href{http://www.nada.kth.se/~viggo/wwwcompendium/}{``A compendium of \
   \item Design and analyze an algorithm for primality testing (page~\pageref{sec:primality-test-algorithm}).
   \item Design and analyze an algorithm for the FSAT problem using a SAT oracle (page~\pageref{sec:fsat}).
   \item Design and analyze an algorithm for the Happy Net Problem (page~\pageref{sec:happy-net-problem}).
-  \item Design and analyze an interactive protocol to show that $\overline{\probl{GI}} \in \cls{IP}$ (page~\pageref{src:gi-ip}).
+  \item Design and analyze an interactive protocol to show that $\overline{\probl{GI}} \in \cls{IP}$ (page~\pageref{sec:gic-ip}).
   \item Design and analyze an approximation algorithm for Bin Packing (page~\pageref{sec:approx-bin-pack}).
   \item Design and analyze an approximation algorithm for Scheduling and Knapsack (page~\pageref{sec:scheduling} and \pageref{sec:approx-knapsack})
 \end{itemize}
@@ -4992,7 +5004,7 @@ Website: \href{http://www.nada.kth.se/~viggo/wwwcompendium/}{``A compendium of \
 
 \section{List of mentioned complexity classes}
 %
-More than 496~complexity classes are currently maintained in the \href{https://complexityzoo.uwaterloo.ca/Complexity_Zoo}{Complexity Zoo}.
+More than 496~complexity classes are currently maintained in the \href{https://complexityzoo.uwaterloo.ca/Complexity_Zoo}{Complexity Zoo}. We mentioned 23~complexity classes.
 
 \begin{minipage}{0.3\textwidth}
   \begin{itemize}\itemsep0pt
@@ -5030,7 +5042,7 @@ More than 496~complexity classes are currently maintained in the \href{https://c
   \end{itemize}
 \end{minipage}
 
-The following definitions got extracted from \href{https://complexityzoo.uwaterloo.ca/Complexity_Zoo}{Complexity Zoo}.
+The following definitions for these 23 complexity classes got extracted from \href{https://complexityzoo.uwaterloo.ca/Complexity_Zoo}{Complexity Zoo}.
 
 \begin{description}
   \item[\cls{APX}]
@@ -5216,7 +5228,7 @@ The following definitions got extracted from \href{https://complexityzoo.uwaterl
   \item Define the \probl{MajSat} problem. Classify \probl{MajSat} in terms of complexity classes.
   \item Can you create a fair die with polynomial effort using an unfair die? How? What does it tell about probabilistic complexity classes?
   \item What are function problems? Define the complexity class \cls{FP}. Give 2 example problems. What are total functions?
-  \item Define the TSP variants \probl{$\text{TSP}_{\text{DEC}}$}, \probl{EXACT-TSP}, \probl{TSP-COST} and \probl{TSP}.
+  \item Define the TSP variants \probl{$\text{TSP}_{\text{DEC}}$}, \probl{Exact-TSP}, \probl{TSP-Cost} and \probl{TSP}.
   % TODO
   \item What is the polynomial hierarchy? What does it define? Which conclusions can we draw? Consider the \probl{QSAT$_i$} problem. In which level of the hierarchy is it contained?
   \item What is the relation between \cls{BPP} and the polynomial hierarchy?
