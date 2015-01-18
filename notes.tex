@@ -355,15 +355,19 @@ We can use the following Lemma 1.2 (analogous to Lemma 1.1):
   \]
 \end{quote}
 
-A circuit C of size $m$ contains $\leq m$ multiplications and therefore degree $\leq 2^m$.
+A circuit $C$ of size $m$ contains $\leq m$ multiplications and therefore degree $\leq 2^m$.
 
 Idea for probabilistic algorithm:
-\begin{enumerate}
-  \item Select random integers for $x_1, \ldots, x_n \in \set{1, \ldots, 10, \ldots, 2^m}$
-         (requires $\mathcal{O}(nm)$ random bits).
-  \item We evaluate C for those integers: $y$.
-  \item If $Y = 0$, answer ``Yes''. Else ``I don't know''.
-\end{enumerate}
+\begin{algorithm}
+\caption{Probabilistic algorithm to solve ``is polynomial zero?''}
+\begin{algorithmic}[1]
+  \State
+    Select random integers $I$ for $x_1, \ldots, x_n \in \set{1, \ldots, 10, \ldots, 2^m}$
+    (requires $\mathcal{O}(nm)$ random bits).
+  \State Let $Y$ be the result of the evaluation of $C$ for $I$.
+  \State If $Y = 0$, answer ``Yes''. Else ``I don't know''.
+\end{algorithmic}
+\end{algorithm}
 
 If $C \in \cls{ZEROP}$, then we accept $C$ always.
 If $C \notin \cls{ZEROP}$ and we do not answer with ``NO'' for $y \neq 0$,
