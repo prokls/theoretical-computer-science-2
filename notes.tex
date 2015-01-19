@@ -626,23 +626,23 @@ Remarks:
 All these complexity classes require some concept of probability;
 for example random bits set on the turing machine. Question in practice:
 
-Assume we don't have any fair dice / coins ($\prop{(\text{head})} \neq \frac12$).
+Assume we don't have any fair dice / coins ($\prop{(\text{heads})} \neq \frac12$).
 Does this define a new complexity class?
 
 You can create a fair die with polynomial effort using an unfair die.
 So \cls{RP} and \cls{BPP} (etc) are not influenced.
 
-Take a coin with $\prop{(\text{head})} = \rho$ with $\rho \neq \frac12$.
+Take a coin with $\prop{(\text{heads})} = \rho$ with $\rho \neq \frac12$.
 The following two lemmas apply:
 \begin{enumerate}
-  \item (Lemma 1.3) A coin with $\prop{(\text{head})} = \rho$ can be simulated
+  \item (Lemma 1.3) A coin with $\prop{(\text{heads})} = \rho$ can be simulated
          by a probabilistic, polynomial turing machine in expected time
          $\mathcal{O}(1)$, if the i-th bit of $\rho$ is determinable
          in polynomial time in $i$.
          Notice that the last assumption is only relevant for irrational
          numbers.
-  \item (Lemma 1.4) A coin with $\prop{(\text{head})} = \frac12$ (fair coin)
-        can be simulated with a coin of $\prop(head) = \rho$ in expected time
+  \item (Lemma 1.4) A coin with $\prop{(\text{heads})} = \frac12$ (fair coin)
+        can be simulated with a coin of $\prop(heads) = \rho$ in expected time
         $\mathcal{O}\left(\frac{1}{\rho (1-\rho)}\right)$.
 \end{enumerate}
 
@@ -651,8 +651,8 @@ The following two lemmas apply:
 Is $0.p_1 p_2 p_3\ldots$ a binary fractional representation of $\rho$.
 The probabilistic turingmachine creates a sequence of random bits
 $b_1 b_2 \ldots$ step by step, where bit $b_i$ is created in step $i$.
-If $b_i < p_i$ then the turing machine returns ``head'' as result and stops.
-If $b_i > p_i$ then the turing machine returns ``bottom'' as result and stops.
+If $b_i < p_i$ then the turing machine returns ``heads'' as result and stops.
+If $b_i > p_i$ then the turing machine returns ``tails'' as result and stops.
 In any other case, go on (increment $i$).
 
 If turing machine reaches bit $i+i$, then
@@ -661,23 +661,23 @@ If turing machine reaches bit $i+i$, then
 \]
 The probability for this is defined by $(\frac12)^l$.
 
-The probability that the result is head is $\sum_i p_i \cdot \frac{1}{2^i} = \rho$.
+The probability that the result is heads is $\sum_i p_i \cdot \frac{1}{2^i} = \rho$.
 Expected runtime is $\sum_i i^c \cdot \frac{1}{2^i}$ for constant $c$.
 
 \subsubsection{Proof of Lemma 1.4}
 %
 We construct a turing machine which simulates (using the possibility to
-use a coin with $\prop(head) = \rho$ multiple times) a fair coin.
+use a coin with $\prop(heads) = \rho$ multiple times) a fair coin.
 
 M throws pair of coins (2 coins) with bias $\rho$. Repeat these paired throws
-until 2 different results are given. We return ``head'' for the result
-head-bottom and ``bottom'' for bottom-head.
+until 2 different results are given. We return ``heads'' for the result
+heads-tails and ``tails'' for tails-heads.
 
-Probability for head-bottom is $\rho \cdot (1-\rho)$.
-Probability for bottom-head is $(1-\rho) \cdot \rho = \rho \cdot (1 - \rho)$.
+Probability for heads-tails is $\rho \cdot (1-\rho)$.
+Probability for tails-heads is $(1-\rho) \cdot \rho = \rho \cdot (1 - \rho)$.
 Probability that turing machine stops in every step is $2\rho \cdot (1-\rho)$.
-The conditional probability for stopping in step $k$ is equal for head
-and bottom. So we can create a fair coin with $\prop(head) = \frac12$.
+The conditional probability for stopping in step $k$ is equal for heads
+and tails. So we can create a fair coin with $\prop(heads) = \frac12$.
 This proof does work for any value of $\rho$.
 
 \subsubsection{Remark for Lemma 1.2}
