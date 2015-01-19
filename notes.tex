@@ -121,6 +121,7 @@ Contents:
 \begin{spec}
   \given{$G = (U, V, E)$ is an undirected, bipartite graph with $U = \set{u_1, u_2, \ldots, u_n}$ and $V = \set{v_1, v_2, \ldots, v_n}$.}
   \find{Does a perfect matching exist in the bipartite graph $G$?}
+  \textbf{Reference.} ``Computational Complexity'' (Christos Papadimitriou), ``Symbolic determinants'' in section 11.1
 \end{spec}
 \begin{definition}
   A \emph{matching} $M$ in $G$ is a set of pairwise non-adjacent edges. So no two edges of the matching share a common vertex. A \emph{perfect matching} is a matching covering all vertices of $G$.
@@ -136,7 +137,6 @@ Contents:
 \end{figure}
 
 Consider a matrix $A(G) = (a_{i,j})$ for graph $G$. We distinguish 2 cases:
-
 \[
   a_{i,j} = \left\{\begin{array}{cl}
     \underbrace{x_{i,j}}_{\text{symbolic variable}} & (u_i, v_j) \in E  \\
@@ -156,36 +156,37 @@ $S_n$ is the set of permutations over $\set{1, \ldots, n}$.
 
 Observation:
 \begin{enumerate}
-  \item Non-zero terms of the second factor (the product in $\det A$) correspond to a perfect matching.
-  \item $G$ has a perfect matching if the $\det A(G) \neq 0$ (zero function).
+  \item Non-zero terms of the product in $\det A$ correspond to a perfect matching.
+  \item $G$ has a perfect matching if the $\det A(G) \neq 0$ (hence is a zero function).
 \end{enumerate}
 
 Remarks:
 \begin{itemize}
-  \item Consequence: An alternative method to solve the question above is based on the evaluation of $\det A(G)$.
-  \item We gain interest in the evaluation of a symbolic determinant.
+  \item This alternative method given above is based on the evaluation of $\det A(G)$.
+  \item We are interested in the evaluation of a symbolic determinant.
 \end{itemize}
 
-For actual values of $x_{i,j} \in \mathbb{Q}$ we can evaluate $\det A(G)$ in polynomial time (eg. via gaussian elimination).
-For the symbolic determinant evaluation no algorithm is known (actually, the question if a specific coefficient is the coefficient of the symbolic non-zero determinant, is an \cls{NP}-complete problem).
+For given values of $x_{i,j} \in \mathbb{Q}$ we can evaluate $\det A(G)$ in polynomial time (eg. via gaussian elimination).
+For the symbolic determinant evaluation no algorithm is known (actually, the question whether a specific coefficient is the coefficient of the symbolic non-zero determinant, is an \cls{NP}-complete problem).
 
 In our case we want to know whether or not $\det A(G) = 0$.
 
 \subsubsection{Idea and Lemma}
 %
 Select a random configuration for $x_{i,j}$ and evaluate the resulting determinant.
-If determinant is 0, then we have the zero function or a zero-point in the function. In the other case G has a perfect matching (result: YES).
+If the determinant is 0, then we have found the zero function or a root in the function.
+In the other case G has a perfect matching (result: YES).
 In the first case, we have to proceed with further evaluations.
 
 \textbf{Lemma 1.1:}
-Assume $p(z_1, z_2, \ldots, z_m)$ to be a polynomial with $m$ variables (must not be the zero polynomial). $u$ is the degree of the variables $\leq d$.
-Furthermore $M > 0$ and $M \in \mathbb{Z}$. It is fact that the number of $m$-tuples $(z_1, \ldots, z_m) \in \set{0, 1, \ldots, M-1}$ with $p(z_1, \ldots, z_m) = 0$ is smaller or equal to $M^{m-1}$ (so this is the upper bound for the null point number).
+Assume $p(z_1, z_2, \ldots, z_m)$ to be a polynomial with $m$ variables (must not be the zero polynomial). $d$ is the maximum degree of those variables.
+Furthermore $M > 0$ and $M \in \mathbb{Z}$. It is fact that the number of $m$-tuples $(z_1, \ldots, z_m) \in \set{0, 1, \ldots, M-1}$ with $p(z_1, \ldots, z_m) = 0$ is smaller or equal to $mdM^{m-1}$ (so this is the upper bound).
 
 \textbf{Proof of the Lemma:} Complete induction over $m$.
 \begin{description}
   \item[$m=1$:]
-    Number of null points $\leq d$ (with respect to the fundamental theorem of algebra)
-    for a polynom of 1 variable of degree $\leq d$.
+    Number of zeros $\leq d$ (with respect to the fundamental theorem of algebra)
+    for a polynomial of 1 variable of degree $\leq d$.
   \item[$m-1 \rightarrow m$:]
     Polynomial $p$ in $z_1, \ldots, z_m$. Consider $p$ to be a polynomial in $z_m$ with coefficients
     which are in $z_1, \ldots, z_{m-1}$.
@@ -198,7 +199,7 @@ Case distinction:
 \begin{description}
   \item[The coefficient with highest degree of $z_m$ in $p$ is 0.]
     Apply induction to the coefficient of $z_m$ with highest degree.
-    The coefficient is a polynomal in $z_1, \ldots, z_{m-1}$.
+    The coefficient is a polynomial in $z_1, \ldots, z_{m-1}$.
     Can therefore $\leq (m-1)$ of $M^{m-2}$ permutations of $(z_1, \ldots, z_{m-1})$.
     In combination with the selection of $z_m$ ($M$ possibilities).
     $\leq (m-1)$ of $M^{m-1}$.
@@ -216,22 +217,22 @@ Consider the following algorithm:
 \begin{algorithmic}[1]
   \State
     Choose $m$ random integers ($i_1, \ldots, i_m$) for the assignment of $x_{i,j}$ with $\set{i,j} \in E$.
-    (here $m = |E|$) with $x_{i,j} \in \set{0, \ldots, M-1}$ whereby in the case of a matching $M = 2m = 2\cdot |E|$.
+    (here $m = |E|$) with $x_{i,j} \in \set{0, \ldots, M-1}$ whereas in the case of a matching $M = 2m = 2\cdot |E|$.
   \State Evaluate $\det A(G)$ for $x_{i,j}$ assignment  ($i_1, \ldots, i_m$).
   \If{$\det A(G) (i_1, \ldots, i_m) \neq 0$}
-    \State \Return ``YES, G has a perfect matching''.
+    \State \Return ``Yes, G has a perfect matching''.
   \Else
-   \State \Return ``I know know'' (we need further repetitions).
+   \State \Return ``I don't know'' (we need further repetitions).
   \EndIf
-  \State \Return with no error and ``I don't know in some cases''
 \end{algorithmic}
 \end{algorithm}
 
+This algorithm returns with ``no error'' or ``I don't know''.
 This algorithm is part of the complexity class \cls{RP}.
 
 \subsubsection{Analysis of the algorithm}
 %
-Properties of the algorithm:
+Properties of the algorithm (false-biased Monte-Carlo algorithm):
 \begin{itemize}
   \item If the answer is Yes (there exists an perfect matching), the answer is always correct (no false positives).
   \item
@@ -240,24 +241,52 @@ Properties of the algorithm:
     some threshold (therefore, false negatives are possible).
 \end{itemize}
 
-What's the probability that we get a false negative?
-\begin{itemize}
-  \item
-    In the case of matching we can see that the error probability (applying the algorithm once)
-    is $\leq \frac12$ (recognize that $d=1$ here).
-    $k$ applications: $\leq \frac{1}{2^k}$.
-  \item This is a Monte-Carlo algorithm.
-\end{itemize}
+\emph{What's the probability that we get a false negative?}
+
+In the case of a Yes-answer we can see that the error probability (applying the algorithm once)
+is $\leq \frac12$ (recognize that $d=1$ here).
+With $k$ applications, we get a probability $\leq \frac{1}{2^k}$.
 
 \subsection{Problem: SAT problem}
 \label{sec:sat-algorithm}
 %
-2-SAT (polynomial evaluable with flow theory) and 3-SAT (\cls{NP}-complete). 2 or 3 literals per clause.
-
 \begin{spec}
   \given{A boolean equation $\phi$ in conjunctive normal form.}
   \find{Is $\phi$ satisfiable?}
+  \textbf{2-SAT.} Restrict boolean equation to CNF with 2 literals per clause. \par
+  \textbf{3-SAT.} Restrict boolean equation to CNF with 3 literals per clause. \par
 \end{spec}
+
+\probl{2-SAT} has been show to be polynomially decidable (eg. with flow theory).
+Here the following algorithm shall be given:
+\begin{algorithm}
+  \caption{Algorithm to decide \probl{2-SAT} in polynomial time (Even, Itai, Shamir, 1976)}
+\begin{algorithmic}[1]
+  \State All variables are unassigned. Recent branch point is unknown.
+  \While{unassigned variables exist}
+    \If{both literals of clause falsify clause}
+      \If{Backtracking not possible}
+        \State \Return{Unsatisfiable}
+      \Else
+        \State Go back to most recent branch point.
+      \EndIf
+    \ElsIf{one of both variables of clause are set}
+      \State Assign the remaining variable in a way to make clause satisfied
+    \ElsIf{clause is satisfied or both variables are free}
+      \State Create branch point
+      \State Set one variable to an arbitrary value
+    \EndIf
+  \EndWhile
+\end{algorithmic}
+\end{algorithm}
+%
+%\emph{What is unit propagation?}
+%\begin{itemize}
+%  \item For every clause $(a \lor a)$, assign $a=\top$.
+%  \item For every clause $(\neg a \lor \neg a)$, assign $a=\bot$.
+%\end{itemize}
+
+3-SAT is known to be \cls{NP}-complete and cannot be solved efficiently.
 
 Consider the following algorithm for SAT:
 \begin{algorithm}
@@ -328,7 +357,7 @@ which evaluate whether a polynomial (which is identical) is a zero-polynomial.
 \[
     c = c' \quad \Leftrightarrow \quad c - c' = 0
 \]
-This is why the name \cls{ZeroP} was chosen. A special case of this problem is exercise 1, we discussed previously.
+This is why the name \cls{ZeroP} was chosen. A special case of this problem is the previous problem to determine whether a perfect matching exists.
 
 \textbf{Problem:} Detection of \cls{ZeroP} is non-trivial (ie. is a polynomial $P \in$ \cls{ZeroP}).
 
@@ -505,11 +534,11 @@ If probability of false positives and false negatives $\leq \frac12$ (after $k$ 
 \subsection{Complexity class \cls{PP}}
 \label{class:pp}
 
-\cls{PP} (probabilistic polynomial) is not defined algorithmically.
+\cls{PP} (probabilistic polynomial) is not defined algorithmically. We consider \probl{MajSat} (majority SAT).
 
 \begin{spec}
-  \given{We consider \probl{MajSat} (majority SAT). Given is a SAT equation with $n$ variables.}
-  \find{Is is true that the majority of $2^n \geq 2^{n-1}+1$ assignments satisfy the equation?}
+  \given{A SAT equation with $n$ variables.}
+  \find{Determine whether the majority of $2^n \geq 2^{n-1}+1$ assignments satisfy the equation?}
 \end{spec}
 
 It is unknown whether or not \probl{MajSat} $\in$ \cls{NP} (how should the polynomial certificate look like?). It is even more unlikely that \probl{MajSat} $\in$ \cls{RP}.
@@ -613,7 +642,7 @@ The following two lemmas apply:
          Notice that the last assumption is only relevant for irrational
          numbers.
   \item (Lemma 1.4) A coin with $\prop{(\text{head})} = \frac12$ (fair coin)
-        can be simulated with a coin of p(head) = $\rho$ in expected time
+        can be simulated with a coin of $\prop(head) = \rho$ in expected time
         $\mathcal{O}\left(\frac{1}{\rho (1-\rho)}\right)$.
 \end{enumerate}
 
@@ -621,7 +650,7 @@ The following two lemmas apply:
 %
 Is $0.p_1 p_2 p_3\ldots$ a binary fractional representation of $\rho$.
 The probabilistic turingmachine creates a sequence of random bits
-$b_1 b_2 \ldots$ step by step, whereby bit $b_i$ is created in step $i$.
+$b_1 b_2 \ldots$ step by step, where bit $b_i$ is created in step $i$.
 If $b_i < p_i$ then the turing machine returns ``head'' as result and stops.
 If $b_i > p_i$ then the turing machine returns ``bottom'' as result and stops.
 In any other case, go on (increment $i$).
@@ -638,7 +667,7 @@ Expected runtime is $\sum_i i^c \cdot \frac{1}{2^i}$ for constant $c$.
 \subsubsection{Proof of Lemma 1.4}
 %
 We construct a turing machine which simulates (using the possibility to
-use a coin with p(head) = $\rho$ multiple times) a fair coin.
+use a coin with $\prop(head) = \rho$ multiple times) a fair coin.
 
 M throws pair of coins (2 coins) with bias $\rho$. Repeat these paired throws
 until 2 different results are given. We return ``head'' for the result
@@ -648,10 +677,10 @@ Probability for head-bottom is $\rho \cdot (1-\rho)$.
 Probability for bottom-head is $(1-\rho) \cdot \rho = \rho \cdot (1 - \rho)$.
 Probability that turing machine stops in every step is $2\rho \cdot (1-\rho)$.
 The conditional probability for stopping in step $k$ is equal for head
-and bottom. So we can a fair coin with p(head) = $\frac12$.
+and bottom. So we can create a fair coin with $\prop(head) = \frac12$.
 This proof does work for any value of $\rho$.
 
-\subsubsection{Remark for lemma 1.2}
+\subsubsection{Remark for Lemma 1.2}
 %
 The ``probabilistic turing machine'' must have two transition function
 $\delta_0$ ad $\delta_1$. We decide in every step whether we want to use
@@ -707,7 +736,7 @@ $\phi$ is a SAT equation with variables $x_1, x_2, \ldots, x_n$.
   \item (Successive fixation of variables.)
          We know that in one of the cases (true/false) the answer is ``Yes''
          and an assignment can be found. Fix variable $v$ in such a way
-         (i.e. $\phi_1$ or $\phi_2$) that $\phi$ keeps satisfiable.
+         (i.e. $\phi_1$ or $\phi_2$) that $\phi$ satys satisfiable.
          Stop if all variables got fixated.
          \drawing{fsat.pdf}
 \end{enumerate}
@@ -717,27 +746,27 @@ This approach takes $\mathcal{O}(n)$ SAT calls.
 \subsection{Problem: Travelling Salesman Problem (TSP)}
 \label{sec:tsp}
 %
-TSP with distance matrix of integers.
 \[
-    D = (d_{ij}) \quad d_{ij} \in \mathbb{Z}_0^+
+    D = (d_{ij}) \qquad d_{ij} \in \mathbb{Z}_0^+
 \]
+where $d_{ij}$ specifies the distance between the vertices $i$ and $j$.
+$D$ is called distance matrix.
 
-The classical definition of TSP: Given is a distance matrix $D$ and
-we want to find a hamiltonian path with minimum length/weight.
-The corresponding decision problem ($TSP_{\text{DEC}}$):
-$n \times n$ matrix $D = (d_{ij})$ with $d_{ij} \in \mathcal{Z}_0^+$
-with upper bound $d^*$ of costs. Is there any hamiltonian path with length
-$\leq d^*$?
+\begin{spec}
+  Classical definition of TSP \par
+  \given{Distance matrix $D$}
+  \find{A hamiltonian path with minimum length/weight}
+\end{spec}
+
+Specifically, TSP is given as decision problem $\text{TSP}_{\text{DEC}}$:
+\begin{spec}
+  \given{$n \times n$ matrix $D = (d_{ij})$ with $d_{ij} \in \mathcal{Z}_0^+$ with upper bound $d^*$ of costs}
+  \find{Is there any hamiltonian path of length $\leq d^*$?}
+\end{spec}
 
 \dateref{14th of Oct 2013}
 
-\begin{spec}
-  \given{Distance matrix D.}
-  \find{Hamiltonian tour.}
-\end{spec}
-
-Decision problem $\text{TSP}_{\text{dec}}$. We show that when a polynomial algorithm for
-$\text{TSP}_{\text{DEC}}$ exists, then there is a polynomial algorithm for TSP:
+We show that when a polynomial algorithm for $\text{TSP}_{\text{DEC}}$ exists, then there is a polynomial algorithm for TSP:
 
 \paragraph{Step 1}
 Determine the requested target function value (length of optimal tour).
@@ -750,8 +779,9 @@ is there any tour with length ($\leq 2^{q-1}$)? We get a binary tree always
 with two branches ``Yes'' and ``No''. On the second level we ask is there any
 tour with length ($\leq 2^{q-2}$).
 
-After a polynomial number ($\mathcal{O}(\log_2(20) = \mathcal{O}(p)$) of steps $c^*$,
-the length of the requested tour is known.
+After a polynomial number $\mathcal{O}(q)$ of steps, % TODO: verify
+%($\mathcal{O}(\log_2(20) = \mathcal{O}(p)$) of steps,
+$c^*$---the length of the requested tour---is known.
 
 \paragraph{Step 2}
 Determine a required tour (a tour with length $c^*$).
@@ -768,7 +798,7 @@ In the end (after $\mathcal{O}(n^2)$ steps) we know the optimal tour.
 \paragraph{Formally}
 $L$ is a language in \cls{NP}. We want to define the associated function problem to L: FL.
 For $L \in $ \cls{NP} there is a binary relation $R_L$, which is determinable in polynomial
-time such that $\forall x \text{strings} \exists \text{string} y$ with
+time such that $\forall x \text{ strings } \exists \text{ string } y$ with
 $\underbrace{R_L(x,y)}_{(x,y) \in R_L} \Leftrightarrow x \in L$. $R_L(x,y)$ is the
 certificate of an accepted instance. 
 
@@ -778,10 +808,15 @@ there is no such $y$.
 
 \paragraph{Next task:} Generalize the class / reduction term of decision problems for function problems.
 
-\textbf{Definition:} A and B are two function problems. A is \emph{reducible to B}, iff
-$\exists$ string functions $R$ and $S$ (both compute in polynomial space) such that:
+\textbf{Definition:} A and B are two function problems. A is \emph{reducible to B}, iff $\exists$ string functions $R$ and $S$ (both computable in polynomial space) such that the relation illustrated in Figure~\ref{fig:function-problem-reduction} is given.
 
-\drawing{function_problem_reduction.pdf}
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics{function_problem_reduction.pdf}
+    \caption{Reduction term for function problems}
+    \label{fig:function-problem-reduction}
+  \end{center}
+\end{figure}
 
 $x$ is an input string of an instance of $A$ such that $R(x)$ is an input string of an instance
 of $B$. Is $z$ a correct output for the instance of $B$ with input $R(x)$ then $S(z)$ is a
@@ -806,7 +841,7 @@ $\exists$ always $y$ with $R_L(x,y)$?
   \find{prime number decomposition}
 \end{spec}
 
-The corresponding decision problem is not interesting (Answer is always yes).
+The corresponding decision problem is not interesting (answer is always yes).
 Function problems are not trivial. It's an open question whether factorization is possible
 in polynomial time.
 Factorization is fundamentally different than FSAT where a decision problem cannot be solved
@@ -835,11 +870,11 @@ pidgeonhole principle. Without this constraint, the decision problem is complete
 %
 \begin{spec}
   \given{Undirected graph $G$, edge weights $w_e \in \mathbb{Z}$ for all $e \in E$. State function $S$: $V \rightarrow \set{+1, -1}$.}
-  \find{Find a state s in which all vertices are happy.}
+  \find{Find a state $S$ in which all vertices are happy.}
 \end{spec}
 
-A vertex $i \in V$ is called ``happy for $S$'' iff $S(i) \cdot \sum_{\set{i,j}\in E} S(j) \cdot w_{ij} \geq 0$.
-This problem is known as ``happy net problem''.
+A vertex $i \in V$ is called ``happy for $S$'' iff
+\[ S(i) \cdot \sum_{\set{i,j}\in E} S(j) \cdot w_{ij} \geq 0 \]
 
 \drawing{happy_vertices.pdf}
 
@@ -1421,16 +1456,13 @@ Characterization of $\Sigma_i$ and $\Pi_i$ (recursive and non-recursive).
 \textbf{Theorem 2.7.}
 $L$ is a language and $i \geq 1$. We can state:
 \[
-  L \in \Sigma_i P  \Leftrightarrow  \exists \text{polynomial balanced relation } R
+  L \in \Sigma_i P  \Leftrightarrow  \exists \text{ polynomial balanced relation } R
 \]
-$R$ is a polynomial balanced relation such that the language
-$\set{x;y: (x, y) \in R}$ originates from $\Pi_{i-1} P$ and
-$L = \set{x : \exists y \text{ with } (x, y) \in R}$.
+$R$ is a polynomial balanced relation such that the language $\set{x;y: (x, y) \in R}$ originates from $\Pi_{i-1} P$ and $L = \set{x : \exists y \text{ with } (x, y) \in R}$.
 
 \textbf{Term ``polynomial balanced''.}
 A binary relation $R$ is called polynomial balanced iff
-$\exists k \geq 1$ such that $(x, y) \in R \Rightarrow
-\card{y} \leq \card{x}^k$.
+$\exists k \geq 1$ such that $(x, y) \in R \Rightarrow \card{y} \leq \card{x}^k$.
 
 \textbf{Proof by induction (by $i$):}
 \begin{enumerate}
@@ -1440,7 +1472,7 @@ $\exists k \geq 1$ such that $(x, y) \in R \Rightarrow
     of $\text{NP}$ with a certificate. We know:
     \[
       L \in \text{NP} \Leftrightarrow \exists
-      \text{in polynomial time decidabe, polynomial balanced relation R}
+      \text{ in polynomial time decidabe, polynomial balanced relation R}
     \] \[
       \text{ with } L = \set{x: (x, y) \in R \text{ for some y}}
     \]
@@ -1603,7 +1635,7 @@ layer complete problems do exist.
 \end{enumerate}
 
 \textbf{Remark.} (for $\Sigma_i P$-hardness) If $i$ is odd ($i$ even
-analogously) we use the method introduced in proof of Cook's Theorem.
+analogously) we use the method introduced in the proof of the Cook-Levin Theorem.
 $\exists$ SAT equation $\phi$ which reflects the computation of $M$.
 We arrange the variables in $i+2$ variables. The set $X$ corresponds
 to the variables in the input string of the form $(x_i; y_1; \ldots; y_i)$
@@ -1771,7 +1803,7 @@ Given a SAT equation, find the number of satisfying truth assignments.
 Analogously the number of hamiltonian paths - number of hamiltonian paths.
 Analogously the number of cliques - number of cliques with $\geq k$ vertices.
 
-Those examples are couting variables for problems where the basic decision problem
+Those examples are counting variants for problems where the basic decision problem
 is \cls{NP}-complete.
 
 \subsubsection{\probl{\#Matching} / \probl{Permanent}}
@@ -1803,7 +1835,7 @@ When does the association $\pi$ (permutation $\pi \in S_n$) describe a perfect m
         \Leftrightarrow \prod_{i=1} a_{i\pi(i)} = 1
 \]
 
-The number of perfect matchings is given by
+The number of perfect matchings is given by the permanent
 \[
     \operatorname{perm}(A) = \sum_{\pi \in S_n} \prod_{i=1}^n a_{i\pi(i)}
 \]
@@ -1828,7 +1860,7 @@ Pronounced as ``number P'' or ``sharp P''.
 Is the class of counting problems that are associated using relation $Q$.
 All previously mentioned problems are part of \cls{\#P}.
 
-$Q$ is a polynomial balanced in polynomial time decidable relation.
+$Q$ is a polynomial balanced relation decidable in polynomial time.
 The associated counting problem for $Q$: Given an $x$, find the number
 of $y$ with $(x, y) \in Q$?
 
@@ -1877,7 +1909,7 @@ For the definition of $\cls{\#P}$-completeness we have two approaches:
   $\probl{\#SAT}$ is $\cls{\#P}$-complete.
 
 \textbf{Sketch of proof.}
-  Consider the proof of Cook's theorem.
+  Consider the proof of the Cook-Levin theorem.
   Reduction of an arbitrary language to SAT.
   In polynomial time evaluable function $f: \set{0,1}^* \rightarrow \set{0,1}^*$
   such that $\forall x \in \set{0,1}^*: f(x) \in \cls{SAT} \Leftrightarrow x \in L$.
@@ -1885,13 +1917,13 @@ For the definition of $\cls{\#P}$-completeness we have two approaches:
 This proof however provides more than that: It provides a method
 to convert a certificate $x \in L$ to a certificate $f(x) \in \cls{SAT}$
 [ie. a satisfying truth assignment] and vice versa. This is a
-bijunctive relation.
+bijective relation.
 
 Thus the number of satisfying assignments is the number of certificates for $x$
 (the reduction is a paisimonious reduction).
 
 \textbf{Theorem 3.3.}
-  $\probl{\#HAMILTONIAN-PATH CYCLE} \in \cls{\#P}$-complete.
+  $\probl{\#Hamiltonian-Path Cycle} \in \cls{\#P}$-complete.
 
 Reduction via $\#SAT$ (can be dervied from the proof that TSP is
 $\cls{FP}^{\cls{NP}}$ complete).
@@ -1921,7 +1953,7 @@ $\cls{FP}^{\cls{NP}}$ complete).
   \item For $01$-matrix $A$ we already know $\operatorname{perm}(A) =$
         the number of perfect matchings in a bipartite graph
         $G(A)$ which are associated to $A$.
-  \item For matrix $A$ with $a_{i,j} \in \set{0, \mp 1}$.
+  \item For matrix $A$ with $a_{i,j} \in \set{0, \pm 1}$.
         It is easy to state that $\operatorname{perm}(A) =
         \card{\set{\pi \in S_n: \pi_{j = 1}^n a_{i\pi(i)} = 1}} -
         \card{\set{\pi \in S_n: \pi_{i = 1}^n a_{i\pi(i)} = -1}}$.
@@ -2115,7 +2147,7 @@ Computed in 2 steps:
         If $L$ is the number of bits to describe the weights in $G'$,
         the graph is blown back with factor $\mathcal{O}(n\cdot L^2 \log{n})$.
         $2$ can be replaced by parallel 1-edges. Therefore we get
-        only $\{0,\mp1\}$ edges.
+        only $\{0,\pm 1\}$ edges.
   \item Removal of negative weights by transition to modulo arithmetics.
         Transition to $\mod{2^q + 1}$ with $q = n^2$. Now we can state
         $-1 \equiv 2^q \mod{2^q + 1}$. The permanent $\mod{2^q + 1}$
@@ -2198,7 +2230,7 @@ with $(x, y) \in \mathbb{R}$ is odd).
 %
 \begin{spec}
   \given{A SAT equation.}
-  \find{Is the number of satisfying assignments even?}
+  \find{Is the number of satisfying assignments odd?} % TODO: was even
 \end{spec}
 
 \textbf{Theorem 3.6.} \probl{$\oplus$ SAT} is $\oplus$P-complete.
@@ -2208,9 +2240,9 @@ with $(x, y) \in \mathbb{R}$ is odd).
 \probl{$\oplus$ P} completeness follows from parsimonious reducibility
 of a problem in \cls{\#P} to \probl{\#SAT}.
 
-Analogously, \probl{$\oplus$ HAMIL. PATH/CYCLE} $\in$ \cls{$\oplus$ P}-complete.
+Analogously, \probl{$\oplus$ Hamiltonian Path/Cycle} $\in$ \cls{$\oplus$ P}-complete.
 
-\subsubsection{\probl{$\oplus$ PERM} in \cls{$\oplus$ P}-complete}
+\subsubsection{\probl{$\oplus$ Perm} in \cls{$\oplus$ P}-complete}
 %
 Can be solved in polynomial time because the parity of the determinant corresponds
 to the parity of the permanent (polynomial time!).
@@ -2400,7 +2432,7 @@ polynomial time in $|x|$ and with $k$ message exchanges:
   x \notin L \Rightarrow \forall \underbrace{P}_{\text{proof}}:
     \set{0,1}^* \rightarrow \set{0,1}^*
 \] \[
-  \text{with } \operatorname{propability}(\text{verifier does not accept }P) = 0
+  \text{with } \operatorname{propability}(\text{verifier does not accept }P) = 0  % TODO: verify, double negation?!
 \]
 
 Complexity class $d | P$ (``d'' for deterministic) contains all
@@ -2731,7 +2763,7 @@ the real communication between prover and verifier.
 
 \textbf{Remark.} Further examples for PZK protocols: see practicals.
 
-Is there any PZK protocol for HAMILTONIAN PATH? We guess not (as for any other
+Is there any PZK protocol for \probl{Hamiltonian Path}? We guess not (as for any other
 \cls{NP}-complete problem).
 
 \[
@@ -2807,7 +2839,7 @@ Typical candidates for one-way functions:
 \label{class:up}
 %
 \textbf{Definition.} (complexity class \cls{UP})
-A non-deterministic turingmachine is named \textbf{u}nambiguous, iff
+A non-deterministic turingmachine is called \emph{\textbf{u}nambiguous}, iff
 for every input $x$ there is exactly one accepting
 computational path. UP is the class of languages which can be decided
 by unambiguous NTMs in polynomial time.
@@ -3064,7 +3096,7 @@ $\cls{NEXP}$ (very powerful!).
   Or: randomized verifiable proofs.
 
 \textbf{Definition.}
-  Is $r, q: \mathbb{N} \rightarrow \mathbb{N}$.
+  Let $r, q: \mathbb{N} \rightarrow \mathbb{N}$.
   A $(r(n), q(n))$-bounded PCP is a randomized verifiable algorithm $V$
   with polynomial runtime and the following properties:
 \begin{itemize}
@@ -3081,9 +3113,7 @@ $\cls{NEXP}$ (very powerful!).
     \]
 \end{itemize}
 
-Because $V$ must have polynomial runtime only polynomial functions
-are considered for $r(n)$ and $q(n)$ (this is some kind of ressource
-constraint).
+Because $V$ must have polynomial runtime only polynomial functions are considered for $r(n)$ and $q(n)$ (this is some kind of resource constraint).
 
 \textbf{Definition.}
   A decision problem $L$ is part of the class PCP($r(n)$, $q(n)$)
@@ -5048,6 +5078,7 @@ More than 496~complexity classes are currently maintained in the \href{https://c
 
 The following definitions for these 23 complexity classes got extracted from \href{https://complexityzoo.uwaterloo.ca/Complexity_Zoo}{Complexity Zoo}.
 
+% TODO: add "d|P"
 \begin{description}
   \item[\cls{APX}]
     The subclass of \cls{NPO} problems that admit constant-factor approximation algorithms.  (I.e., there is a polynomial-time algorithm that is guaranteed to find a solution within a constant factor of the optimum cost.) 
@@ -5227,24 +5258,28 @@ The following definitions for these 23 complexity classes got extracted from \hr
 %
 \begin{enumerate}
   \item What does the Cook-Levin theorem state?
-  \item Define the probabilistic complexity classes \cls{RP}, \cls{co-\cls{RP}}, \cls{BPP}, \cls{PP} and \cls{ZPP}. Define their relation towards each other and \cls{P} and \cls{NP}. What are Monte-Carlo algorithms? What are Las-Vegas algorithms?
+  \item What are Monte-Carlo algorithms? What are Las-Vegas algorithms? Define the probabilistic complexity classes \cls{RP}, \cls{co-\cls{RP}}, \cls{BPP}, \cls{PP} and \cls{ZPP}. Define their relation towards each other and \cls{P} and \cls{NP}.
   \item Formally define a Monte-Carlo turing machine.
   \item Define the \probl{MajSat} problem. Classify \probl{MajSat} in terms of complexity classes.
   \item Can you create a fair die with polynomial effort using an unfair die? How? What does it tell about probabilistic complexity classes?
   \item What are function problems? Define the complexity class \cls{FP}. Give 2 example problems. What are total functions?
   \item Define the TSP variants \probl{$\text{TSP}_{\text{DEC}}$}, \probl{Exact-TSP}, \probl{TSP-Cost} and \probl{TSP}.
   % TODO
+  \item Define the complexity class \cls{DP} and prove that \probl{Sat-UnSAT} and \probl{Exact-TSP} are \cls{DP}-complete.
   \item What is the polynomial hierarchy? What does it define? Which conclusions can we draw? Consider the \probl{QSAT$_i$} problem. In which level of the hierarchy is it contained?
+  \item What does polynomially balanced mean?
   \item What is the relation between \cls{BPP} and the polynomial hierarchy?
   \item Define what a counting problem is. How is the class \cls{\#P} defined? Show at least two problems that are \cls{\#P}-complete.
+  \item Prove that \probl{Permanent} $\in$ \cls{\#P}-complete.
   \item What does the Theorem of Toda say?
+  \item What are parsimonious reductions?
   \item What is the relation between \cls{PP} and \cls{\#P}?
   \item Define the complexity class \cls{$\oplus$P}. Discuss \probl{$\oplus$SAT}, \probl{$\oplus$PERM}. Show that \cls{NP} $\subseteq$ RP$^{\cls{\oplus P}}$.
-  \item Discuss which interactive protocol variants exist and what their properties are. Discuss their relation to \cls{P} and \cls{NP}. Define the class \cls{IP}.
+  \item Discuss which interactive protocol variants exist and what their properties are. Discuss their relation to \cls{P}, \cls{NP} and \cls{PSPACE}. Define the class \cls{IP}.
   \item Define the perfect zero knowledge property. What does bit commitment mean?
   \item What are the \emph{statistical zero knowledge property} and the \emph{computational zero knowledge property}?
   \item Define the complexity class \cls{UP}. What is the relation between \cls{UP} and \cls{P}?
-  \item What does the PCP-Theorem say? What does PCP stand for? When is a decision problem part of $\probl{PCP}(r(n), q(n))$?
+  \item What does the PCP-Theorem say? When is a decision problem part of $\probl{PCP}(r(n), q(n))$?
   \item Discuss the linearity and consistency tests for functions.
   \item Define the notion of approximation quality and what does $c$-approximation mean? Define the complexity classes \cls{APX} and \cls{APX*}.
   \item What does \cls{PTAS} and \cls{FPTAS} stand for? Discuss the \probl{Max-Clique} and \probl{Vertex-Cover} problems in terms of approximability.
