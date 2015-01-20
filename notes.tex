@@ -1,4 +1,4 @@
-\documentclass[a4paper]{article}
+    \documentclass[a4paper]{article}
 
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -779,8 +779,7 @@ is there any tour with length ($\leq 2^{q-1}$)? We get a binary tree always
 with two branches ``Yes'' and ``No''. On the second level we ask is there any
 tour with length ($\leq 2^{q-2}$).
 
-After a polynomial number $\mathcal{O}(q)$ of steps, % TODO: verify
-%($\mathcal{O}(\log_2(20) = \mathcal{O}(p)$) of steps,
+After a polynomial number $\mathcal{O}(\log_2(2^q) = \mathcal{O}(q)$ of steps,
 $c^*$---the length of the requested tour---is known.
 
 \paragraph{Step 2}
@@ -2230,7 +2229,7 @@ with $(x, y) \in \mathbb{R}$ is odd).
 %
 \begin{spec}
   \given{A SAT equation.}
-  \find{Is the number of satisfying assignments odd?} % TODO: was even
+  \find{Is the number of satisfying assignments odd?}
 \end{spec}
 
 \textbf{Theorem 3.6.} \probl{$\oplus$ SAT} is $\oplus$P-complete.
@@ -2247,7 +2246,7 @@ Analogously, \probl{$\oplus$ Hamiltonian Path/Cycle} $\in$ \cls{$\oplus$ P}-comp
 Can be solved in polynomial time because the parity of the determinant corresponds
 to the parity of the permanent (polynomial time!).
 
-\textbf{Theorem 3.7.} $\oplus$ P a.g. regarding complement.  % TODO: germanize
+\textbf{Theorem 3.7.} $\oplus$ P is closed with respect to complement.
 Proof will be done in practicals.
 
 \textbf{Theorem 3.8} \cls{NP} $\subseteq$ \cls{RP}\textsuperscript{\cls{$\oplus$ P}}. We will define a polynomial Monte Carlo algorithm for SAT when using a \cls{$\oplus$ SAT} oracle.
@@ -2427,12 +2426,12 @@ polynomial time in $|x|$ and with $k$ message exchanges:
   x \in L \Rightarrow \exists \underbrace{P}_{\text{proof}}:
     \set{0,1}^* \rightarrow \set{0,1}^*
 \] \[
-  \text{with } \operatorname{propability}(\text{verifier accepts }P) = 1
+  \text{with } \prop(\text{verifier accepts }P) = 1
 \] \[
   x \notin L \Rightarrow \forall \underbrace{P}_{\text{proof}}:
     \set{0,1}^* \rightarrow \set{0,1}^*
 \] \[
-  \text{with } \operatorname{propability}(\text{verifier does not accept }P) = 0  % TODO: verify, double negation?!
+  \text{with } \prop(\text{verifier does not accept }P) = 1
 \]
 
 Complexity class $d | P$ (``d'' for deterministic) contains all
@@ -3827,8 +3826,6 @@ Central point is the property of $E'$ on termination.
     Furthermore $|E'| = k \Rightarrow |V'| \leq 2k$. Quality $2$ follows,
     because for a cover of $E'$ at least $k$ vertices are necessary.
 \end{itemize}
-
-% TODO: It should be fine, but there might be some content missing here.
 
 \textbf{Example 3.} (\probl{Max-3-SAT}) Given a \probl{3~SAT} equation $l$ with variables
   $x_1, \ldots, x_m$ and clauses $c_1, \ldots, c_n$. Find an assignment such
